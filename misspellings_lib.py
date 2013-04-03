@@ -25,8 +25,13 @@ def normalize(word):
 
 def split_words(line):
   """Return the list of words contained in a line."""
-  # Normalize any camel cased words first
-  line = _NORM_REGEX.sub(r'\1 \2', line)
+  # Normalize any camel cased words first.
+  # Do this recursively to split overlapping cases.
+  while True:
+    (line, number_of_subs) = _NORM_REGEX.subn(r'\1 \2', line)
+    if not number_of_subs:
+      break
+
   return [normalize(w) for w in _WORD_REGEX.split(line)]
 
 
