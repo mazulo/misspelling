@@ -14,7 +14,7 @@ import re
 import sys
 import string
 
-_NORM_REGEX = re.compile('([a-z])([A-Z][a-z])')
+_NORM_REGEX = re.compile('([A-Z][a-z]*)')
 _WORD_REGEX = re.compile('[\s_0-9\W]+', flags=re.UNICODE)
 
 
@@ -26,11 +26,7 @@ def normalize(word):
 def split_words(line):
   """Return the list of words contained in a line."""
   # Normalize any camel cased words first.
-  # Do this recursively to split overlapping cases.
-  while True:
-    (line, number_of_subs) = _NORM_REGEX.subn(r'\1 \2', line)
-    if not number_of_subs:
-      break
+  line = ' '.join([w for w in _NORM_REGEX.split(line) if w])
 
   return [normalize(w) for w in _WORD_REGEX.split(line)]
 
