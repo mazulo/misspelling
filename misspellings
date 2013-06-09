@@ -30,9 +30,9 @@ class Suggestions(object):
         if word not in self.last_suggestions:
             self.last_suggestions[word] = suggestions[0]
         line = get_a_line(filename, lineno)
-        sys.stdout.write('> %s\nReplace "%s" with one of %s\nChoose [%s]:'
-                         % (line, word, ','.join(suggestions),
-                            self.last_suggestions[word]))
+        sys.stdout.write('> %s\nReplace "%s" with one of %s\nChoose [%s]:' %
+                         (line, word, ','.join(suggestions),
+                          self.last_suggestions[word]))
         suggestion = sys.stdin.readline().strip()
         if not suggestion:
             suggestion = self.last_suggestions[word]
@@ -99,8 +99,8 @@ def output_sed_script(ms, parser, opts):
     if os.path.exists(opts.script_output):
         # Emit an error is the file already exists in case the user
         # forgets to give the file - but does give source files.
-        parser.error('The sed script file "%s" must not exist.'
-                     % opts.script_output)
+        parser.error('The sed script file "%s" must not exist.' %
+                     opts.script_output)
     sed_script = open(opts.script_output, 'w')
     sg = Suggestions()
     for res in results:
@@ -130,8 +130,10 @@ def expand_directories(path_list):
     for path in path_list:
         if os.path.isdir(path):
             for root, dirnames, filenames in os.walk(path):
-                new_path_list += [os.path.join(root, name) for name in filenames
-                                  if not _excluded_re.search(name)]
+                new_path_list += [
+                    os.path.join(root, name) for name in filenames
+                    if not _excluded_re.search(name)]
+
                 for exdir in _excluded_dirs:
                     if exdir in dirnames:
                         dirnames.remove(exdir)
