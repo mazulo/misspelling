@@ -12,175 +12,178 @@ import misspellings_lib as misspellings
 
 
 def get_a_line(filename, lineno):
-  """Read a specific line from a file."""
-  # Perhaps caching this would be nice, but assuming not an insane
-  # number of misspellings.
-  return open(filename, 'r').readlines()[lineno - 1].rstrip()
+    """Read a specific line from a file."""
+    # Perhaps caching this would be nice, but assuming not an insane
+    # number of misspellings.
+    return open(filename, 'r').readlines()[lineno - 1].rstrip()
 
 
 class Suggestions(object):
-  """Class to query user on which correction should be used."""
-  def __init__(self):
-    self.last_suggestions = {}
 
-  def get_suggestion(self, filename, lineno, word, suggestions):
-    """Show line from file, a misspelled word and request replacement."""
-    if word not in self.last_suggestions:
-      self.last_suggestions[word] = suggestions[0]
-    line = get_a_line(filename, lineno)
-    sys.stdout.write('> %s\nReplace "%s" with one of %s\nChoose [%s]:'
-                     % (line, word, ','.join(suggestions),
-                        self.last_suggestions[word]))
-    suggestion = sys.stdin.readline().strip()
-    if not suggestion:
-      suggestion = self.last_suggestions[word]
-    else:
-      self.last_suggestions[word] = suggestion
-    return suggestion
+    """Class to query user on which correction should be used."""
+
+    def __init__(self):
+        self.last_suggestions = {}
+
+    def get_suggestion(self, filename, lineno, word, suggestions):
+        """Show line from file, a misspelled word and request replacement."""
+        if word not in self.last_suggestions:
+            self.last_suggestions[word] = suggestions[0]
+        line = get_a_line(filename, lineno)
+        sys.stdout.write('> %s\nReplace "%s" with one of %s\nChoose [%s]:'
+                         % (line, word, ','.join(suggestions),
+                            self.last_suggestions[word]))
+        suggestion = sys.stdin.readline().strip()
+        if not suggestion:
+            suggestion = self.last_suggestions[word]
+        else:
+            self.last_suggestions[word] = suggestion
+        return suggestion
 
 
 def print_file_context(fn, target_line_num, context=5):
-  """Show a line from a file in context."""
-  line_num = 1
-  start_line = target_line_num - context
-  end_line = target_line_num + context
-  with open(fn, 'r') as f:
-    for line in f:
-      if (line_num > start_line) and (line_num < end_line):
-        if line_num == target_line_num:
-          sys.stdout.write('+%5d %s' % (line_num, line))
-        else:
-          sys.stdout.write(' %5d %s' % (line_num, line))
-      line_num += 1
+    """Show a line from a file in context."""
+    line_num = 1
+    start_line = target_line_num - context
+    end_line = target_line_num + context
+    with open(fn, 'r') as f:
+        for line in f:
+            if (line_num > start_line) and (line_num < end_line):
+                if line_num == target_line_num:
+                    sys.stdout.write('+%5d %s' % (line_num, line))
+                else:
+                    sys.stdout.write(' %5d %s' % (line_num, line))
+            line_num += 1
 
 
 def parse_file_list(filename):
-  """Show a line from a file in context."""
-  f = sys.stdin
-  try:
-    if filename != '-':
-      f = open(filename, 'r')
-    return [line.strip() for line in f]
-  except IOError:
-    raise
-  finally:
-    if f != sys.stdin:
-      f.close()
+    """Show a line from a file in context."""
+    f = sys.stdin
+    try:
+        if filename != '-':
+            f = open(filename, 'r')
+        return [line.strip() for line in f]
+    except IOError:
+        raise
+    finally:
+        if f != sys.stdin:
+            f.close()
 
 
 def esc_sed(raw_text):
-  """Escape chars for a sed command on a shell command line."""
-  return raw_text.replace('"', '\\"').replace('/', '\\/')
+    """Escape chars for a sed command on a shell command line."""
+    return raw_text.replace('"', '\\"').replace('/', '\\/')
 
 
 def esc_file(raw_text):
-  """Escape chars for a file name on a shell command line."""
-  return raw_text.replace('\'', '\'"\'"\'')
+    """Escape chars for a file name on a shell command line."""
+    return raw_text.replace('\'', '\'"\'"\'')
 
 
 # Output routines.
 def output_normal(ms):
-  """Output a list of misspelled words and their corrections."""
-  errors, results = ms.check()
-  for res in results:
-    print('%s:%d: %s -> %s' % (res[0], res[1], res[2], ','.join(
-      ['"%s"' % w for w in ms.suggestions(res[2])])))
-  for err in errors:
-    sys.stderr.write('ERROR: %s\n' % err)
+    """Output a list of misspelled words and their corrections."""
+    errors, results = ms.check()
+    for res in results:
+        print('%s:%d: %s -> %s' % (res[0], res[1], res[2], ','.join(
+                                   ['"%s"' % w for w in ms.suggestions(res[2])])))
+    for err in errors:
+        sys.stderr.write('ERROR: %s\n' % err)
 
 
 def output_sed_script(ms, parser, opts):
-  """Output a series of portable sed commands to change the file."""
-  errors, results = ms.check()
-  if os.path.exists(opts.script_output):
-    # Emit an error is the file already exists in case the user
-    # forgets to give the file - but does give source files.
-    parser.error('The sed script file "%s" must not exist.'
-                 % opts.script_output)
-  sed_script = open(opts.script_output, 'w')
-  sg = Suggestions()
-  for res in results:
-    suggestions = ms.suggestions(res[2])
-    if len(suggestions) == 1:
-      suggestion = suggestions[0]
-    else:
-      suggestion = sg.get_suggestion(res[0], res[1], res[2], suggestions)
-    if suggestion != res[2]:
-      sed_script.write('cp "%(f)s" "%(f)s,"\n'
-                       'sed "%(lc)ds/%(wrd)s/%(rep)s/" "%(f)s" > "%(f)s,"\n'
-                       'mv "%(f)s," "%(f)s"\n'
-                       % {'f': esc_file(res[0]), 'lc': res[1],
-                          'wrd': esc_sed(res[2]), 'rep': esc_sed(suggestion)})
-  for err in errors:
-    sys.stderr.write('ERROR: %s\n' % err)
-  sed_script.close()
+    """Output a series of portable sed commands to change the file."""
+    errors, results = ms.check()
+    if os.path.exists(opts.script_output):
+        # Emit an error is the file already exists in case the user
+        # forgets to give the file - but does give source files.
+        parser.error('The sed script file "%s" must not exist.'
+                     % opts.script_output)
+    sed_script = open(opts.script_output, 'w')
+    sg = Suggestions()
+    for res in results:
+        suggestions = ms.suggestions(res[2])
+        if len(suggestions) == 1:
+            suggestion = suggestions[0]
+        else:
+            suggestion = sg.get_suggestion(res[0], res[1], res[2], suggestions)
+        if suggestion != res[2]:
+            sed_script.write('cp "%(f)s" "%(f)s,"\n'
+                             'sed "%(lc)ds/%(wrd)s/%(rep)s/" "%(f)s" > "%(f)s,"\n'
+                             'mv "%(f)s," "%(f)s"\n'
+                             % {'f': esc_file(res[0]), 'lc': res[1],
+                                'wrd': esc_sed(res[2]), 'rep': esc_sed(suggestion)})
+    for err in errors:
+        sys.stderr.write('ERROR: %s\n' % err)
+    sed_script.close()
 
 _excluded_re = re.compile('\.(py[co]|s?o|a)$')
-_excluded_dirs = (".bzr", ".git", ".hg", ".svn", "CVS")
+_excluded_dirs = ('.bzr', '.git', '.hg', '.svn', 'CVS')
+
 
 def expand_directories(path_list):
-  """Return list with directories replaced their contained files."""
-  new_path_list = []
-  for path in path_list:
-    if os.path.isdir(path):
-      for root, dirnames, filenames in os.walk(path):
-        new_path_list += [os.path.join(root, name) for name in filenames
-                          if not _excluded_re.search(name)]
-        for exdir in _excluded_dirs:
-          if exdir in dirnames:
-            dirnames.remove(exdir)
-    else:
-      new_path_list.append(path)
-  return new_path_list
+    """Return list with directories replaced their contained files."""
+    new_path_list = []
+    for path in path_list:
+        if os.path.isdir(path):
+            for root, dirnames, filenames in os.walk(path):
+                new_path_list += [os.path.join(root, name) for name in filenames
+                                  if not _excluded_re.search(name)]
+                for exdir in _excluded_dirs:
+                    if exdir in dirnames:
+                        dirnames.remove(exdir)
+        else:
+            new_path_list.append(path)
+    return new_path_list
 
 
 def main():
-  """main function."""
-  parser = optparse.OptionParser(
-      usage='Usage: misspellings [-f file_list] [files]',
-      description='Checks files for common spelling mistakes.',
-      epilog='  files: Zero or more files to check.',
-      add_help_option=False)
-  parser.add_option('-v', '--version', action='store_true',
-                    help='Show the version number and exit.')
-  parser.add_option('-h', '--help', action='help',
-                    help='Show this help message and exit.')
-  parser.add_option('-f', dest='file_list', metavar='file',
-                    help='File containing list of files to check.')
-  parser.add_option('-m', dest='ms_file', metavar='file',
-                    help='File containing list of misspelled words &'
-                         ' corrections.')
-  parser.add_option('-d', dest='dump_ms', action='store_true',
-                    help='Dump the list of misspelled words.')
-  parser.add_option('-i', dest='interactive', action='store_true',
-                    help='Interactively fix the file.')
-  parser.add_option('-s', dest='script_output', metavar='file',
-                    help='Create a shell script to interactively correct'
-                         ' the files - script saved to the given file.')
-  opts, files = parser.parse_args()
+    """main function."""
+    parser = optparse.OptionParser(
+        usage='Usage: misspellings [-f file_list] [files]',
+        description='Checks files for common spelling mistakes.',
+        epilog='  files: Zero or more files to check.',
+        add_help_option=False)
+    parser.add_option('-v', '--version', action='store_true',
+                      help='Show the version number and exit.')
+    parser.add_option('-h', '--help', action='help',
+                      help='Show this help message and exit.')
+    parser.add_option('-f', dest='file_list', metavar='file',
+                      help='File containing list of files to check.')
+    parser.add_option('-m', dest='ms_file', metavar='file',
+                      help='File containing list of misspelled words &'
+                           ' corrections.')
+    parser.add_option('-d', dest='dump_ms', action='store_true',
+                      help='Dump the list of misspelled words.')
+    parser.add_option('-i', dest='interactive', action='store_true',
+                      help='Interactively fix the file.')
+    parser.add_option('-s', dest='script_output', metavar='file',
+                      help='Create a shell script to interactively correct'
+                           ' the files - script saved to the given file.')
+    opts, files = parser.parse_args()
 
-  if opts.version:
-    print('Version 2.0b')
-    return 0
-  elif opts.file_list:
-    try:
-      files += parse_file_list(opts.file_list)
-    except IOError:
-      print('ERROR: %s' % sys.exc_info()[1])
-      return 1
+    if opts.version:
+        print('Version 2.0b')
+        return 0
+    elif opts.file_list:
+        try:
+            files += parse_file_list(opts.file_list)
+        except IOError:
+            print('ERROR: %s' % sys.exc_info()[1])
+            return 1
 
-  ms = misspellings.Misspellings(files=expand_directories(files),
-                                 misspelling_file=opts.ms_file)
-  if opts.dump_ms:
-    for word, correction in ms.dump_misspelling_list():
-      print('%s %s' % (word, correction))
-  if not opts.interactive:
-    if not opts.script_output:
-      output_normal(ms)
+    ms = misspellings.Misspellings(files=expand_directories(files),
+                                   misspelling_file=opts.ms_file)
+    if opts.dump_ms:
+        for word, correction in ms.dump_misspelling_list():
+            print('%s %s' % (word, correction))
+    if not opts.interactive:
+        if not opts.script_output:
+            output_normal(ms)
+        else:
+            output_sed_script(ms, parser, opts)
     else:
-      output_sed_script(ms, parser, opts)
-  else:
-    print('Interactive mode not implemented yet.')
+        print('Interactive mode not implemented yet.')
 
 if __name__ == '__main__':
-  sys.exit(main())
+    sys.exit(main())
