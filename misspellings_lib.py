@@ -95,8 +95,10 @@ class Misspellings(object):
                         line_ct = 1
                         for line in f:
                             for word in split_words(line):
-                                if (word in self._misspelling_dict or
-                                        word.lower() in self._misspelling_dict):
+                                if (
+                                    word in self._misspelling_dict or
+                                    word.lower() in self._misspelling_dict
+                                ):
                                     results.append([fn, line_ct, word])
                             line_ct += 1
                 except UnicodeDecodeError:

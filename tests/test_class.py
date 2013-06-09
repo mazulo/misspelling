@@ -75,15 +75,15 @@ class MisspellingsTestCase(unittest.TestCase):
         self.assertEqual(len(results), 0)
 
     def testGoodFile(self):
-        ms = misspellings.Misspellings(files=[
-                                       os.path.join(BASE_PATH, 'nine_mispellings.c')])
+        ms = misspellings.Misspellings(
+            files=[os.path.join(BASE_PATH, 'nine_mispellings.c')])
         errors, results = ms.check()
         self.assertEqual(len(errors), 0)
         self.assertEqual(len(results), 9)
 
     def testMoreComplexFile(self):
-        ms = misspellings.Misspellings(files=[
-                                       os.path.join(BASE_PATH, 'various_spellings.c')])
+        ms = misspellings.Misspellings(
+            files=[os.path.join(BASE_PATH, 'various_spellings.c')])
         errors, results = ms.check()
         self.assertEqual(len(errors), 0)
         self.assertEqual(len(results), 7)

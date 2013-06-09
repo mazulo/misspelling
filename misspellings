@@ -85,8 +85,10 @@ def output_normal(ms):
     """Output a list of misspelled words and their corrections."""
     errors, results = ms.check()
     for res in results:
-        print('%s:%d: %s -> %s' % (res[0], res[1], res[2], ','.join(
-                                   ['"%s"' % w for w in ms.suggestions(res[2])])))
+        print(
+            '%s:%d: %s -> %s' %
+            (res[0], res[1], res[2], ','.join(
+                ['"%s"' % w for w in ms.suggestions(res[2])])))
     for err in errors:
         sys.stderr.write('ERROR: %s\n' % err)
 
@@ -108,11 +110,12 @@ def output_sed_script(ms, parser, opts):
         else:
             suggestion = sg.get_suggestion(res[0], res[1], res[2], suggestions)
         if suggestion != res[2]:
-            sed_script.write('cp "%(f)s" "%(f)s,"\n'
-                             'sed "%(lc)ds/%(wrd)s/%(rep)s/" "%(f)s" > "%(f)s,"\n'
-                             'mv "%(f)s," "%(f)s"\n'
-                             % {'f': esc_file(res[0]), 'lc': res[1],
-                                'wrd': esc_sed(res[2]), 'rep': esc_sed(suggestion)})
+            sed_script.write(
+                'cp "%(f)s" "%(f)s,"\n'
+                'sed "%(lc)ds/%(wrd)s/%(rep)s/" "%(f)s" > "%(f)s,"\n'
+                'mv "%(f)s," "%(f)s"\n'
+                % {'f': esc_file(res[0]), 'lc': res[1],
+                   'wrd': esc_sed(res[2]), 'rep': esc_sed(suggestion)})
     for err in errors:
         sys.stderr.write('ERROR: %s\n' % err)
     sed_script.close()
