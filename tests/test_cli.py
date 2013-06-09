@@ -131,8 +131,12 @@ class MisspellingsCLITestCase(unittest.TestCase):
         self.assertEqual(error_output.decode('utf8'), '')
         self.assertIn('withdrawl', output.decode('utf8'))
         self.assertEqual(p.returncode, 0)
-        self.assertListEqual(open(test_out, 'r').readlines(),
-                             open(good_out, 'r').readlines())
+
+        with open(good_out, 'r') as good_file:
+            good_contents = good_file.readlines()
+        with open(test_out, 'r') as test_file:
+            test_contents = test_file.readlines()
+        self.assertListEqual(test_contents, good_contents)
 
     def testStandardIn(self):
         p = subprocess.Popen([CLI, '-f', '-'],
