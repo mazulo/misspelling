@@ -8,7 +8,7 @@ if sys.version_info < (2, 7):
 else:
     import unittest
 
-BASE_PATH = os.path.dirname(__file__)
+BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 LOG_PATH = os.path.join(BASE_PATH, 'logs')
 CLI = os.path.join('..', 'misspellings')
 
