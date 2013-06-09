@@ -131,10 +131,14 @@ class UtilityFunctionTestCase(unittest.TestCase):
   def testSplitWordsWithCamelCase(self):
     self.assertEqual(['one', 'Two', 'Three'],
                      misspellings.split_words('oneTwoThree'))
+    self.assertEqual(['one', 'Two', 'Three', 'Four'],
+                     misspellings.split_words('oneTwoThreeFour'))
     self.assertEqual(['one', 'Two', 'Three', 'four'],
                      misspellings.split_words('oneTwoThree_four'))
     self.assertEqual(['one', 'Two', 'Three', 'four', 'five'],
                      misspellings.split_words('oneTwoThree_four five'))
+    self.assertEqual(['foo', 'Up', 'To', 'Bar'],
+                     misspellings.split_words('fooUpToBar'))
 
   def testSplitWordsWithOtherCharacters(self):
     self.assertEqual(['the', 'big', 'cat'],
