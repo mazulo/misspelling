@@ -33,9 +33,7 @@ bad-names=foo,bar,baz,toto,tutu,tata
 no-docstring-rgx=__.*__
 
 [FORMAT]
-max-line-length=80
 max-module-lines=5000
-indent-string='  '
 
 [MISCELLANEOUS]
 notes=FIXME,XXX,TODO
