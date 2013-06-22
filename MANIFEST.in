@@ -1,5 +1,7 @@
-include LICENSE README.rst TODO setup.py
+include LICENSE
+include README.rst
 include misspellings
 include misspellings_lib.py
+include setup.py
 recursive-include tests *.py *.txt *.c *_list *good_out cq.sh
 recursive-include utils *
