@@ -3,6 +3,7 @@
 
 from __future__ import unicode_literals
 
+import codecs
 import io
 import optparse
 import os
@@ -82,12 +83,12 @@ def esc_file(raw_text):
 
 
 # Output routines.
-def output_normal(ms):
+def output_normal(ms, output):
     """Output a list of misspelled words and their corrections."""
     errors, results = ms.check()
     for res in results:
-        print(
-            '%s:%d: %s -> %s' %
+        output.write(
+            '%s:%d: %s -> %s\n' %
             (res[0], res[1], res[2], ','.join(
                 ['"%s"' % w for w in ms.suggestions(res[2])])))
     for err in errors:
@@ -178,14 +179,18 @@ def main():
             print('ERROR: %s' % sys.exc_info()[1])
             return 1
 
+    output = codecs.getwriter('utf-8')(sys.stdout.buffer
+                                       if hasattr(sys.stdout, 'buffer')
+                                       else sys.stdout)
+
     ms = misspellings.Misspellings(files=expand_directories(files),
                                    misspelling_file=opts.ms_file)
     if opts.dump_ms:
         for word, correction in ms.dump_misspelling_list():
-            print('%s %s' % (word, correction))
+            output.write('%s %s\n' % (word, correction))
     if not opts.interactive:
         if not opts.script_output:
-            output_normal(ms)
+            output_normal(ms, output=output)
         else:
             output_sed_script(ms, parser, opts)
     else:
