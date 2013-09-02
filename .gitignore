@@ -8,3 +8,4 @@ tests/logs
 .*.swp
 .tox
 .coverage
+.travis-solo/
