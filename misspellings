@@ -175,8 +175,8 @@ def main():
     elif opts.file_list:
         try:
             files += parse_file_list(opts.file_list)
-        except IOError:
-            print('ERROR: %s' % sys.exc_info()[1])
+        except IOError as exception:
+            parser.error(exception)
             return 1
 
     output = codecs.getwriter('utf-8')(sys.stdout.buffer
