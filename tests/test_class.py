@@ -1,16 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# For Python 2.5
-from __future__ import with_statement
+from __future__ import unicode_literals
 
+import io
 import os
 import sys
-import misspellings_lib as misspellings
+
 if sys.version_info < (2, 7):
     import unittest2 as unittest
 else:
     import unittest
+
+import misspellings_lib as misspellings
+
 
 BASE_PATH = os.path.dirname(__file__)
 LOG_PATH = os.path.join(BASE_PATH, 'logs')
@@ -36,7 +39,7 @@ class MisspellingsTestCase(unittest.TestCase):
         misspelling_file = os.path.join(BASE_PATH, 'example_msl.txt')
         ms = misspellings.Misspellings(misspelling_file=misspelling_file)
         lines = 0
-        with open(misspelling_file) as msf:
+        with io.open(misspelling_file) as msf:
             for unused_line in msf:
                 lines += 1
         self.assertEqual(len(ms.dump_misspelling_list()), lines)
@@ -49,8 +52,9 @@ class MisspellingsTestCase(unittest.TestCase):
         default_msl = dms.dump_misspelling_list()
         example_msl = ems.dump_misspelling_list()
         for fn, msl in (('msl_ex', example_msl), ('msl_de', default_msl)):
-            f = open(os.path.join(LOG_PATH,
-                                  'testExampleSameAsDefault.%s.tmp' % fn), 'w')
+            f = io.open(os.path.join(LOG_PATH,
+                                    'testExampleSameAsDefault.%s.tmp' % fn),
+                        'w')
             for w, c in msl:
                 f.write('%s %s\n' % (w, c))
             f.close()
@@ -61,7 +65,7 @@ class MisspellingsTestCase(unittest.TestCase):
         ms = misspellings.Misspellings(
             files=os.path.join(BASE_PATH, 'missing_source.c'))
         errors, results = ms.check()
-        self.assertEqual(len(errors), 1)
+        self.assertTrue(errors)
 
     def testMissingFileWithMultipleFiles(self):
         ms = misspellings.Misspellings(files=[

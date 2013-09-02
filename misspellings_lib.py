@@ -2,17 +2,19 @@
 
 """Misspellings module.
 
-   Take a list of files, check them against a list of misspelled words.
+Take a list of files, check them against a list of misspelled words.
+
 """
 
-# For Python 2.5
-from __future__ import with_statement
+from __future__ import unicode_literals
+
 from collections import defaultdict
 
+import io
 import os
 import re
-import sys
 import string
+
 
 _NORM_REGEX = re.compile('([A-Z][a-z]*)')
 _WORD_REGEX = re.compile('[\s_0-9\W]+', flags=re.UNICODE)
@@ -57,7 +59,7 @@ class Misspellings(object):
         """
         if misspelling_file:
             self._misspelling_dict = defaultdict(list)
-            with open(misspelling_file, 'r') as f:
+            with io.open(misspelling_file, 'r') as f:
                 for line in f:
                     bad_word, correction = line.strip().split(' ', 1)
                     self._misspelling_dict[bad_word].append(correction)
@@ -91,7 +93,7 @@ class Misspellings(object):
         for fn in self._files:
             if not os.path.isdir(fn):
                 try:
-                    with open(fn, 'r') as f:
+                    with io.open(fn, 'r') as f:
                         line_ct = 1
                         for line in f:
                             for word in split_words(line):
@@ -103,8 +105,8 @@ class Misspellings(object):
                             line_ct += 1
                 except UnicodeDecodeError:
                     pass
-                except IOError:
-                    errors.append('%s' % sys.exc_info()[1])
+                except IOError as exception:
+                    errors.append(exception)
         return errors, results
 
     def suggestions(self, word):

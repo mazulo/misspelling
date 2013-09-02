@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 """Check files against a list of commonly misspelled words."""
 
-# For Python 2.5
-from __future__ import with_statement
+from __future__ import unicode_literals
 
+import io
 import optparse
 import os
 import re
 import sys
+
 import misspellings_lib as misspellings
 
 
@@ -15,7 +16,7 @@ def get_a_line(filename, lineno):
     """Read a specific line from a file."""
     # Perhaps caching this would be nice, but assuming not an insane
     # number of misspellings.
-    return open(filename, 'r').readlines()[lineno - 1].rstrip()
+    return io.open(filename, 'r').readlines()[lineno - 1].rstrip()
 
 
 class Suggestions(object):
@@ -46,7 +47,7 @@ def print_file_context(fn, target_line_num, context=5):
     line_num = 1
     start_line = target_line_num - context
     end_line = target_line_num + context
-    with open(fn, 'r') as f:
+    with io.open(fn, 'r') as f:
         for line in f:
             if (line_num > start_line) and (line_num < end_line):
                 if line_num == target_line_num:
@@ -61,7 +62,7 @@ def parse_file_list(filename):
     f = sys.stdin
     try:
         if filename != '-':
-            f = open(filename, 'r')
+            f = io.open(filename, 'r')
         return [line.strip() for line in f]
     except IOError:
         raise
@@ -101,7 +102,7 @@ def output_sed_script(ms, parser, opts):
         # forgets to give the file - but does give source files.
         parser.error('The sed script file "%s" must not exist.' %
                      opts.script_output)
-    sed_script = open(opts.script_output, 'w')
+    sed_script = io.open(opts.script_output, 'w')
     sg = Suggestions()
     for res in results:
         suggestions = ms.suggestions(res[2])
