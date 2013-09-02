@@ -147,32 +147,26 @@ def expand_directories(path_list):
 def main():
     """main function."""
     parser = optparse.OptionParser(
-        usage='Usage: misspellings [-f file_list] [files]',
-        description='Checks files for common spelling mistakes.',
+        usage='Usage: %prog [-f file_list] [files]',
+        description=__doc__.split('\n')[0],
         epilog='  files: Zero or more files to check.',
-        add_help_option=False)
-    parser.add_option('-v', '--version', action='store_true',
-                      help='Show the version number and exit.')
-    parser.add_option('-h', '--help', action='help',
-                      help='Show this help message and exit.')
+        version='%prog {0}'.format(misspellings.__version__),
+        prog='misspellings')
     parser.add_option('-f', dest='file_list', metavar='file',
-                      help='File containing list of files to check.')
+                      help='file containing list of files to check')
     parser.add_option('-m', dest='ms_file', metavar='file',
-                      help='File containing list of misspelled words &'
-                           ' corrections.')
+                      help='file containing list of misspelled words &'
+                           ' corrections')
     parser.add_option('-d', dest='dump_ms', action='store_true',
-                      help='Dump the list of misspelled words.')
+                      help='dump the list of misspelled words')
     parser.add_option('-i', dest='interactive', action='store_true',
-                      help='Interactively fix the file.')
+                      help='interactively fix the file')
     parser.add_option('-s', dest='script_output', metavar='file',
-                      help='Create a shell script to interactively correct'
-                           ' the files - script saved to the given file.')
+                      help='create a shell script to interactively correct'
+                           ' the files - script saved to the given file')
     opts, files = parser.parse_args()
 
-    if opts.version:
-        print('Version 2.0b')
-        return 0
-    elif opts.file_list:
+    if opts.file_list:
         try:
             files += parse_file_list(opts.file_list)
         except IOError as exception:

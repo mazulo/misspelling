@@ -6,6 +6,7 @@ This installs the misspelling command and the misspellings.check module.
 
 """
 
+import ast
 import os
 import sys
 from distutils import file_util
@@ -19,6 +20,14 @@ else:
     import unittest
 
 BASE_DIR = os.path.dirname(globals().get('__file__', os.getcwd()))
+
+
+def version():
+    """Return version string."""
+    with open('misspellings_lib.py') as input_file:
+        for line in input_file:
+            if line.startswith('__version__'):
+                return ast.parse(line).body[0].value.s
 
 
 class TestCmd(Command):
@@ -155,7 +164,7 @@ if 'setuptools' not in dir():
 setup(
     cmdclass=cmdclass,
     name='misspellings',
-    version='2.0c',
+    version=version(),
     url='https://github.com/lyda/misspell-check',
     author='Kevin Lyda',
     author_email='kevin@ie.suberic.net',
