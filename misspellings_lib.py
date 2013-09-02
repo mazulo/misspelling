@@ -59,6 +59,7 @@ class Misspellings(object):
         Raises:
           IOError: Raised if misspelling_file can't be found.
           ValueError: Raised if misspelling_file isn't correctly formatted.
+
         """
         if misspelling_file:
             self._misspelling_dict = defaultdict(list)
@@ -76,6 +77,7 @@ class Misspellings(object):
 
         Args:
           files: List of files to check.
+
         """
         if files.__class__.__name__ == 'str':
             self._files.append(files)
@@ -90,6 +92,7 @@ class Misspellings(object):
           errors: List of system errors, usually file access errors.
           results: List of spelling errors - each tuple is filename,
                    line number and misspelled word.
+
         """
         errors = []
         results = []
@@ -120,6 +123,7 @@ class Misspellings(object):
 
         Returns:
           List of zero or more suggested replacements for word.
+
         """
         suggestions = set(self._misspelling_dict.get(word, [])).union(
             set(self._misspelling_dict.get(word.lower(), [])))
