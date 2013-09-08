@@ -31,7 +31,7 @@ def normalize(word):
 def split_words(line):
     """Return the list of words contained in a line."""
     # Normalize any camel cased words first.
-    line = ' '.join([w for w in _NORM_REGEX.split(line) if w])
+    line = ' '.join(w for w in _NORM_REGEX.split(line) if w)
 
     return [normalize(w) for w in _WORD_REGEX.split(line)]
 
@@ -127,8 +127,8 @@ class Misspellings(object):
         """
         suggestions = set(self._misspelling_dict.get(word, [])).union(
             set(self._misspelling_dict.get(word.lower(), [])))
-        return sorted([same_case(source=word, destination=w)
-                       for w in suggestions])
+        return sorted(same_case(source=word, destination=w)
+                      for w in suggestions)
 
     def dump_misspelling_list(self):
         """Returns a list of misspelled words and corrections."""
