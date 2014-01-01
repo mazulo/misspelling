@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(globals().get('__file__', os.getcwd()))
 
 def version():
     """Return version string."""
-    with open('misspellings_lib.py') as input_file:
+    with open('misspellings_lib/__init__.py') as input_file:
         for line in input_file:
             if line.startswith('__version__'):
                 return ast.parse(line).body[0].value.s
@@ -170,7 +170,7 @@ setup(
     author_email='kevin@ie.suberic.net',
     description='A tool to detect misspellings',
     long_description=open('README.rst').read(),
-    py_modules=['misspellings_lib'],
+    packages=['misspellings_lib'],
     scripts=['misspellings', ],
     keywords='check code spelling spellcheck',
     license='GNU General Public License v3',
