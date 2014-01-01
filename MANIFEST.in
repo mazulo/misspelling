@@ -1,7 +1,7 @@
 include LICENSE
 include README.rst
 include misspellings
-include misspellings_lib.py
+include misspellings_lib/dictionary.json
 include setup.py
 recursive-include tests *.py *.txt *.c *_list *good_out cq.sh
 recursive-include utils *
