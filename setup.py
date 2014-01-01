@@ -171,6 +171,7 @@ setup(
     description='A tool to detect misspellings',
     long_description=open('README.rst').read(),
     packages=['misspellings_lib'],
+    package_data={'misspellings_lib': ['misspellings_lib/dictionary.json']},
     scripts=['misspellings', ],
     keywords='check code spelling spellcheck',
     license='GNU General Public License v3',
