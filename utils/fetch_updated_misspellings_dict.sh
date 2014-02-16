@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-echo '{' > misspellings_lib/dictionary.json
+echo '{' > misspellings_lib/wikipedia.json
 
 url='http://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines'
 curl "$url" 2>| /dev/null \
@@ -11,6 +11,6 @@ curl "$url" 2>| /dev/null \
   | sed "s/'/\"/g" \
   | grep -v "^'ok' " \
   | sed '$s/,$//' \
-  >> misspellings_lib/dictionary.json
+  >> misspellings_lib/wikipedia.json
 
-echo '}' >> misspellings_lib/dictionary.json
+echo '}' >> misspellings_lib/wikipedia.json

@@ -69,9 +69,11 @@ class Misspellings(object):
                     bad_word, correction = line.strip().split(' ', 1)
                     self._misspelling_dict[bad_word].append(correction)
         else:
-            with io.open(os.path.join(os.path.dirname(__file__),
-                                      'dictionary.json')) as input_file:
-                self._misspelling_dict = json.load(input_file)
+            self._misspelling_dict = {}
+            for dictionary in ['wikipedia.json', 'custom.json']:
+                with io.open(os.path.join(os.path.dirname(__file__),
+                                          dictionary)) as input_file:
+                    self._misspelling_dict.update(json.load(input_file))
 
         self._files = []
         if files:
