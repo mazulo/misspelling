@@ -1,7 +1,13 @@
 include LICENSE
+include MANIFEST.in
 include README.rst
+include doc/misspellings.1
+include doc/misspellings.1.rst
 include misspellings
-include misspellings_lib/dictionary.json
+include misspellings_lib/*.json
 include setup.py
 recursive-include tests *.py *.txt *.c *_list *good_out cq.sh
 recursive-include utils *
+exclude .pylintrc
+exclude .travis.yml
+exclude tox.ini
