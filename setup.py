@@ -173,7 +173,7 @@ setup(
     packages=['misspellings_lib'],
     package_data={'misspellings_lib': ['custom.json', 'wikipedia.json']},
     scripts=['misspellings', ],
-    keywords='check code spelling spellcheck',
+    keywords='check, code, spelling, spellcheck',
     license='GNU General Public License v3',
     platforms=['POSIX'],
     # See http://pypi.python.org/pypi?%3Aaction=list_classifiers
