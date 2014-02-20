@@ -11,6 +11,7 @@ the files in a body of source code.
 
 This tool uses the English wordlist from Wikipedia in order to scan
 source code and identify misspelled words.
+
 """
 
 from __future__ import unicode_literals
