@@ -12,12 +12,14 @@ import sys
 from distutils import file_util
 from distutils import log
 from distutils.command.install import install
-from distutils.core import setup
 from distutils.core import Command
+from distutils.core import setup
+
 if sys.version_info < (2, 7):
     import unittest2 as unittest
 else:
     import unittest
+
 
 BASE_DIR = os.path.dirname(globals().get('__file__', os.getcwd()))
 
@@ -30,7 +32,7 @@ def version():
                 return ast.parse(line).body[0].value.s
 
 
-class TestCmd(Command):
+class TestCommand(Command):
     description = 'Runs all available tests.'
     user_options = []
 
@@ -50,7 +52,7 @@ class TestCmd(Command):
             sys.exit(1)
 
 
-class CleanCmd(Command):
+class CleanCommand(Command):
     description = 'Remove all generated files.'
     user_options = []
 
@@ -121,7 +123,7 @@ class CleanCmd(Command):
                             os.path.normpath(accused))
 
 
-class InstallCmd(install):
+class InstallCommand(install):
     user_options = install.user_options[:]
     user_options.extend([('manprefix=', None,
                           'installation prefix for man pages')])
@@ -155,11 +157,11 @@ class InstallCmd(install):
                                     dry_run=self.dry_run)
 
 # Only override install if not being run by setuptools.
-cmdclass = {'test': TestCmd,
-            'dist_clean': CleanCmd,
+cmdclass = {'test': TestCommand,
+            'dist_clean': CleanCommand,
             }
 if 'setuptools' not in dir():
-    cmdclass['install'] = InstallCmd
+    cmdclass['install'] = InstallCommand
 
 setup(
     cmdclass=cmdclass,

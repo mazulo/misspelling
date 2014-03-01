@@ -3,7 +3,6 @@
 
 from __future__ import unicode_literals
 
-import io
 import os
 import sys
 
@@ -42,12 +41,12 @@ class MisspellingsTestCase(unittest.TestCase):
         self.assertTrue(errors)
 
     def testMissingFileWithMultipleFiles(self):
-        ms = misspellings.Misspellings(files=[
-                                       os.path.join(
-                                       BASE_PATH,
-                                       'missing_source_%d.c' %
-                                       i)
-                                       for i in range(10)])
+        ms = misspellings.Misspellings(
+            files=[
+                os.path.join(
+                    BASE_PATH,
+                    'missing_source_%d.c' % i)
+                for i in range(10)])
         errors, results = ms.check()
         self.assertEqual(len(errors), 10)
         self.assertEqual(len(results), 0)

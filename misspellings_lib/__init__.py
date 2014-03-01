@@ -8,13 +8,12 @@ Take a list of files, check them against a list of misspelled words.
 
 from __future__ import unicode_literals
 
-from collections import defaultdict
-
-import json
 import io
+import json
 import os
 import re
 import string
+from collections import defaultdict
 
 
 __version__ = '2.1'
