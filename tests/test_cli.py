@@ -43,7 +43,7 @@ class MisspellingsCLITestCase(unittest.TestCase):
         (output, error_output) = p.communicate()
         self.assertEqual(error_output.decode('utf8'), '')
         self.assertEqual(len(output.decode('utf8').split('\n')), 10)
-        self.assertEqual(p.returncode, 0)
+        self.assertEqual(p.returncode, 2)
 
     def testBadFile(self):
         p = subprocess.Popen([CLI, 'missing.c'],
@@ -63,7 +63,7 @@ class MisspellingsCLITestCase(unittest.TestCase):
         (output, error_output) = p.communicate()
         self.assertEqual(error_output.decode('utf8'), '')
         self.assertEqual(len(output.decode('utf8').split('\n')), 10)
-        self.assertEqual(p.returncode, 0)
+        self.assertEqual(p.returncode, 2)
 
     def testBadFlagF(self):
         p = subprocess.Popen([CLI, '-f', 'broken_file_list'],
@@ -138,7 +138,7 @@ class MisspellingsCLITestCase(unittest.TestCase):
             input='nine_mispellings.c\n'.encode('utf8'))
         self.assertEqual(error_output.decode('utf8'), '')
         self.assertEqual(len(output.decode('utf8').split('\n')), 10)
-        self.assertEqual(p.returncode, 0)
+        self.assertEqual(p.returncode, 2)
 
 if __name__ == '__main__':
     unittest.main()

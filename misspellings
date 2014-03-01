@@ -97,15 +97,24 @@ def esc_file(raw_text):
 
 # Output routines.
 def output_normal(ms, output):
-    """Output a list of misspelled words and their corrections."""
+    """Print a list of misspelled words and their corrections.
+
+    Return True if misspellings are found.
+
+    """
     errors, results = ms.check()
+    found = False
     for res in results:
         output.write(
             '%s:%d: %s -> %s\n' %
             (res[0], res[1], res[2], ','.join(
                 ['"%s"' % w for w in ms.suggestions(res[2])])))
+        found = True
+
     for err in errors:
         sys.stderr.write('ERROR: %s\n' % err)
+
+    return found
 
 
 def output_sed_script(ms, parser, opts):
@@ -197,7 +206,7 @@ def main():
             output.write('%s %s\n' % (word, correction))
     if not opts.interactive:
         if not opts.script_output:
-            output_normal(ms, output=output)
+            return 2 if output_normal(ms, output=output) else 0
         else:
             output_sed_script(ms, parser, opts)
     else:
