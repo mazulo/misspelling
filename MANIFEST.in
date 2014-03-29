@@ -1,8 +1,6 @@
 include LICENSE
 include MANIFEST.in
 include README.rst
-include doc/misspellings.1
-include doc/misspellings.1.rst
 include misspellings
 include misspellings_lib/*.json
 include setup.py
