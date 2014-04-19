@@ -1,7 +1,9 @@
 #!/bin/bash -eu
 
-echo '{' > misspellings_lib/wikipedia.json
+repository_root=$(dirname "${BASH_SOURCE[0]}")
+json_filename="$repository_root/../misspellings_lib/wikipedia.json"
 
+echo '{' > "$json_filename"
 
 url='http://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines'
 
@@ -16,6 +18,6 @@ curl "$url" 2>| /dev/null \
   | sed '$s/,$//' \
   | grep -v '"moil"' \
   | grep -v '"refernce"' \
-  >> misspellings_lib/wikipedia.json
+  >> "$json_filename"
 
-echo '}' >> misspellings_lib/wikipedia.json
+echo '}' >> "$json_filename"
