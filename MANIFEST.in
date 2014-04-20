@@ -4,7 +4,7 @@ include README.rst
 include misspellings
 include misspellings_lib/*.json
 include setup.py
-recursive-include tests *.py *.txt *.c *_list *good_out cq.sh
+recursive-include tests *.py *.txt *.c *_list *good_out
 recursive-include utils *
 exclude .pylintrc
 exclude .travis.yml
