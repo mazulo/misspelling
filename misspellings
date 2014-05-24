@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 """Check files against a list of commonly misspelled words.
 
 Wikipedia contains a large number of proper nouns and technical
@@ -14,6 +15,9 @@ source code and identify misspelled words.
 
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 from __future__ import unicode_literals
 
 import codecs
@@ -24,6 +28,10 @@ import re
 import sys
 
 import misspellings_lib as misspellings
+
+
+EXCLUDED_RE = re.compile('\.(py[co]|s?o|a)$')
+EXCLUDED_DIRS = ('.bzr', '.git', '.hg', '.svn', 'CVS')
 
 
 def get_a_line(filename, lineno):
@@ -144,9 +152,6 @@ def output_sed_script(ms, parser, opts):
         sys.stderr.write('ERROR: %s\n' % err)
     sed_script.close()
 
-_excluded_re = re.compile('\.(py[co]|s?o|a)$')
-_excluded_dirs = ('.bzr', '.git', '.hg', '.svn', 'CVS')
-
 
 def expand_directories(path_list):
     """Return list with directories replaced their contained files."""
@@ -156,9 +161,9 @@ def expand_directories(path_list):
             for root, dirnames, filenames in os.walk(path):
                 new_path_list += [
                     os.path.join(root, name) for name in filenames
-                    if not _excluded_re.search(name)]
+                    if not EXCLUDED_RE.search(name)]
 
-                for exdir in _excluded_dirs:
+                for exdir in EXCLUDED_DIRS:
                     if exdir in dirnames:
                         dirnames.remove(exdir)
         else:
@@ -167,7 +172,7 @@ def expand_directories(path_list):
 
 
 def main():
-    """main function."""
+    """Entry point."""
     parser = optparse.OptionParser(
         usage='Usage: %prog [-f file_list] [files]',
         description=__doc__.split('\n')[0],
@@ -210,7 +215,8 @@ def main():
         else:
             output_sed_script(ms, parser, opts)
     else:
-        print('Interactive mode not implemented yet.')
+        print('Interactive mode not implemented yet.',
+              file=sys.stderr)
 
 if __name__ == '__main__':
     sys.exit(main())
