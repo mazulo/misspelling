@@ -48,7 +48,7 @@ class Misspellings(object):
 
     """Detects misspelled words in files."""
 
-    def __init__(self, files=None, misspelling_file=None):
+    def __init__(self, misspelling_file=None):
         """Initialises an Misspellings instance.
 
         Args:
@@ -74,23 +74,7 @@ class Misspellings(object):
                                           dictionary)) as input_file:
                     self._misspelling_dict.update(json.load(input_file))
 
-        self._files = []
-        if files:
-            self.add(files)
-
-    def add(self, files):
-        """Adds files to check.
-
-        Args:
-          files: List of files to check.
-
-        """
-        if files.__class__.__name__ == 'str':
-            self._files.append(files)
-        else:
-            self._files.extend(files)
-
-    def check(self):
+    def check(self, filename):
         """Checks the files for misspellings.
 
         Returns:
@@ -102,23 +86,22 @@ class Misspellings(object):
         """
         errors = []
         results = []
-        for fn in self._files:
-            if not os.path.isdir(fn):
-                try:
-                    with io.open(fn, 'r') as f:
-                        line_ct = 1
-                        for line in f:
-                            for word in split_words(line):
-                                if (
-                                    word in self._misspelling_dict or
-                                    word.lower() in self._misspelling_dict
-                                ):
-                                    results.append([fn, line_ct, word])
-                            line_ct += 1
-                except UnicodeDecodeError:
-                    pass
-                except IOError as exception:
-                    errors.append(exception)
+        if not os.path.isdir(filename):
+            try:
+                with io.open(filename, 'r') as f:
+                    line_ct = 1
+                    for line in f:
+                        for word in split_words(line):
+                            if (
+                                word in self._misspelling_dict or
+                                word.lower() in self._misspelling_dict
+                            ):
+                                results.append([filename, line_ct, word])
+                        line_ct += 1
+            except UnicodeDecodeError:
+                pass
+            except IOError as exception:
+                errors.append(exception)
         return errors, results
 
     def suggestions(self, word):

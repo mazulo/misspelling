@@ -111,7 +111,7 @@ class MisspellingsCLITestCase(unittest.TestCase):
         if os.path.exists(test_out):
             os.unlink(test_out)
         p = subprocess.Popen([CLI, '-s', test_out,
-                             'various_spellings.c'],
+                              'various_spellings.c'],
                              cwd=BASE_PATH,
                              stderr=subprocess.PIPE,
                              stdout=subprocess.PIPE,

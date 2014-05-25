@@ -27,41 +27,31 @@ class MisspellingsTestCase(unittest.TestCase):
             pass
 
     def testMissingMSList(self):
-        self.assertRaises(IOError, misspellings.Misspellings,
-                          None, os.path.join(BASE_PATH, 'missing_msl.txt'))
+        with self.assertRaises(IOError):
+            misspellings.Misspellings(
+                os.path.join(BASE_PATH, 'missing_msl.txt'))
 
     def testBrokenMSList(self):
-        self.assertRaises(ValueError, misspellings.Misspellings, None,
-                          os.path.join(BASE_PATH, 'broken_msl.txt'))
+        with self.assertRaises(ValueError):
+            misspellings.Misspellings(
+                os.path.join(BASE_PATH, 'broken_msl.txt'))
 
     def testMissingFile(self):
-        ms = misspellings.Misspellings(
-            files=os.path.join(BASE_PATH, 'missing_source.c'))
-        errors, results = ms.check()
+        ms = misspellings.Misspellings()
+        errors, results = ms.check(os.path.join(BASE_PATH, 'missing_source.c'))
         self.assertTrue(errors)
 
-    def testMissingFileWithMultipleFiles(self):
-        ms = misspellings.Misspellings(
-            files=[
-                os.path.join(
-                    BASE_PATH,
-                    'missing_source_%d.c' % i)
-                for i in range(10)])
-        errors, results = ms.check()
-        self.assertEqual(len(errors), 10)
-        self.assertEqual(len(results), 0)
-
     def testGoodFile(self):
-        ms = misspellings.Misspellings(
-            files=[os.path.join(BASE_PATH, 'nine_mispellings.c')])
-        errors, results = ms.check()
+        ms = misspellings.Misspellings()
+        errors, results = ms.check(
+            os.path.join(BASE_PATH, 'nine_mispellings.c'))
         self.assertEqual(len(errors), 0)
         self.assertEqual(len(results), 9)
 
     def testMoreComplexFile(self):
-        ms = misspellings.Misspellings(
-            files=[os.path.join(BASE_PATH, 'various_spellings.c')])
-        errors, results = ms.check()
+        ms = misspellings.Misspellings()
+        errors, results = ms.check(
+            os.path.join(BASE_PATH, 'various_spellings.c'))
         self.assertEqual(len(errors), 0)
         self.assertEqual(len(results), 7)
 

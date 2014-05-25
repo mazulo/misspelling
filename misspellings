@@ -104,71 +104,75 @@ def esc_file(raw_text):
 
 
 # Output routines.
-def output_normal(ms, output):
+def output_normal(ms, filenames, output):
     """Print a list of misspelled words and their corrections.
 
     Return True if misspellings are found.
 
     """
-    errors, results = ms.check()
     found = False
-    for res in results:
-        output.write(
-            '%s:%d: %s -> %s\n' %
-            (res[0], res[1], res[2], ','.join(
-                ['"%s"' % w for w in ms.suggestions(res[2])])))
-        found = True
 
-    for err in errors:
-        sys.stderr.write('ERROR: %s\n' % err)
+    for filename in filenames:
+        errors, results = ms.check(filename)
+        for res in results:
+            output.write(
+                '%s:%d: %s -> %s\n' %
+                (res[0], res[1], res[2], ','.join(
+                    ['"%s"' % w for w in ms.suggestions(res[2])])))
+            found = True
+
+        for err in errors:
+            sys.stderr.write('ERROR: %s\n' % err)
+        output.flush()
 
     return found
 
 
-def output_sed_script(ms, parser, opts):
+def output_sed_script(ms, parser, opts, filenames):
     """Output a series of portable sed commands to change the file."""
-    errors, results = ms.check()
     if os.path.exists(opts.script_output):
         # Emit an error is the file already exists in case the user
         # forgets to give the file - but does give source files.
         parser.error('The sed script file "%s" must not exist.' %
                      opts.script_output)
-    sed_script = io.open(opts.script_output, 'w')
+
     sg = Suggestions()
-    for res in results:
-        suggestions = ms.suggestions(res[2])
-        if len(suggestions) == 1:
-            suggestion = suggestions[0]
-        else:
-            suggestion = sg.get_suggestion(res[0], res[1], res[2], suggestions)
-        if suggestion != res[2]:
-            sed_script.write(
-                'cp "%(f)s" "%(f)s,"\n'
-                'sed "%(lc)ds/%(wrd)s/%(rep)s/" "%(f)s" > "%(f)s,"\n'
-                'mv "%(f)s," "%(f)s"\n'
-                % {'f': esc_file(res[0]), 'lc': res[1],
-                   'wrd': esc_sed(res[2]), 'rep': esc_sed(suggestion)})
-    for err in errors:
-        sys.stderr.write('ERROR: %s\n' % err)
-    sed_script.close()
+
+    with io.open(opts.script_output, 'w') as sed_script:
+        for filename in filenames:
+            errors, results = ms.check(filename)
+            for res in results:
+                suggestions = ms.suggestions(res[2])
+                if len(suggestions) == 1:
+                    suggestion = suggestions[0]
+                else:
+                    suggestion = sg.get_suggestion(
+                        res[0], res[1], res[2], suggestions)
+                if suggestion != res[2]:
+                    sed_script.write(
+                        'cp "%(f)s" "%(f)s,"\n'
+                        'sed "%(lc)ds/%(wrd)s/%(rep)s/" "%(f)s" > "%(f)s,"\n'
+                        'mv "%(f)s," "%(f)s"\n'
+                        % {'f': esc_file(res[0]), 'lc': res[1],
+                           'wrd': esc_sed(res[2]), 'rep': esc_sed(suggestion)})
+            for err in errors:
+                sys.stderr.write('ERROR: %s\n' % err)
 
 
 def expand_directories(path_list):
     """Return list with directories replaced their contained files."""
-    new_path_list = []
     for path in path_list:
         if os.path.isdir(path):
             for root, dirnames, filenames in os.walk(path):
-                new_path_list += [
-                    os.path.join(root, name) for name in filenames
-                    if not EXCLUDED_RE.search(name)]
+                for name in filenames:
+                    if not EXCLUDED_RE.search(name):
+                        yield os.path.join(root, name)
 
                 for exdir in EXCLUDED_DIRS:
                     if exdir in dirnames:
                         dirnames.remove(exdir)
         else:
-            new_path_list.append(path)
-    return new_path_list
+            yield path
 
 
 def main():
@@ -191,11 +195,11 @@ def main():
     parser.add_option('-s', dest='script_output', metavar='file',
                       help='create a shell script to interactively correct'
                            ' the files - script saved to the given file')
-    opts, files = parser.parse_args()
+    opts, filenames = parser.parse_args()
 
     if opts.file_list:
         try:
-            files += parse_file_list(opts.file_list)
+            filenames += parse_file_list(opts.file_list)
         except IOError as exception:
             parser.error(exception)
             return 1
@@ -204,16 +208,19 @@ def main():
                                        if hasattr(sys.stdout, 'buffer')
                                        else sys.stdout)
 
-    ms = misspellings.Misspellings(files=expand_directories(files),
-                                   misspelling_file=opts.ms_file)
+    ms = misspellings.Misspellings(misspelling_file=opts.ms_file)
+    filenames = expand_directories(filenames)
+
     if opts.dump_ms:
         for word, correction in ms.dump_misspelling_list():
             output.write('%s %s\n' % (word, correction))
     if not opts.interactive:
         if not opts.script_output:
-            return 2 if output_normal(ms, output=output) else 0
+            return 2 if output_normal(ms,
+                                      filenames=filenames,
+                                      output=output) else 0
         else:
-            output_sed_script(ms, parser, opts)
+            output_sed_script(ms, parser, opts, filenames=filenames)
     else:
         print('Interactive mode not implemented yet.',
               file=sys.stderr)
