@@ -16,7 +16,7 @@ import string
 from collections import defaultdict
 
 
-__version__ = '2.1'
+__version__ = '3.0'
 
 
 _NORM_REGEX = re.compile('([A-Z][a-z]*)')
