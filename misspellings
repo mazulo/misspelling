@@ -31,7 +31,7 @@ import misspellings_lib as misspellings
 
 
 EXCLUDED_RE = re.compile('\.(py[co]|s?o|a)$')
-EXCLUDED_DIRS = ('.bzr', '.git', '.hg', '.svn', 'CVS')
+EXCLUDED_DIRS = ('.bzr', '.git', '.hg', '.svn', '.tox', 'CVS')
 
 
 def get_a_line(filename, lineno):
