@@ -1,12 +1,15 @@
 ============
 misspellings
 ============
-.. image:: https://travis-ci.org/lyda/misspell-check.svg?branch=master
-   :target: https://travis-ci.org/lyda/misspell-check
-   :alt: Build status
+
+.. image:: https://travis-ci.org/myint/misspellings.svg?branch=master
+    :target: https://travis-ci.org/myint/misspellings
+    :alt: Build status
+
 
 Spell checker for code
 ======================
+
 This is a Python library and tool to check for misspelled words in
 source code. It does this by looking for words from a list of
 common misspellings. The dictionary it uses to do this is based
@@ -18,8 +21,10 @@ The list has been slightly modified to remove some changes that
 cause a number of false positives. In particular ``ok->OK`` was
 removed (ok is frequently used in perl tests for instance).
 
+
 Example
 =======
+
 To try it out, merely run the following (using an old coreutils
 source tree as an example)::
 
@@ -32,8 +37,10 @@ source tree as an example)::
     coreutils/src/tac.c:342: unneccessary -> "unnecessary"
     coreutils/src/test.c:91: supressed -> "suppressed"
 
+
 Contributions
 =============
+
 Contributions are welcome! Please add unit tests for new features
 or bug fixes. To run all the unit tests run ``./setup.py test``.
 If you have `tox`_ installed, just run ``tox``.
@@ -58,8 +65,9 @@ The source code is available in the following locations:
 
 Pull requests on any of those platforms or emailed patches are fine.
 
-TODO
-====
+To do
+=====
+
 Some items on the TODO list:
 
 * Implement option to interactively fix files.
@@ -74,8 +82,10 @@ Some items on the TODO list:
   grabs all files first, then checks them, which can take a while.
 * Lacking tests for misspellings cli.
 
+
 Credits
 =======
+
 - `Kevin Lyda`_: Initial shell goo and python version.
 - `Steven Myint`_: Better python idioms and style. Mixed case support.
   Travis/tox support.
