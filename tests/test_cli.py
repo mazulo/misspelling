@@ -4,11 +4,7 @@ from __future__ import unicode_literals
 
 import os
 import subprocess
-import sys
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
+import unittest
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 LOG_PATH = os.path.join(BASE_PATH, 'logs')

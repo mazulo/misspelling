@@ -4,12 +4,7 @@
 from __future__ import unicode_literals
 
 import os
-import sys
-
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
+import unittest
 
 import misspellings_lib as misspellings
 
