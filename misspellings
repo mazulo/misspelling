@@ -190,8 +190,6 @@ def main():
                            ' corrections')
     parser.add_option('-d', dest='dump_ms', action='store_true',
                       help='dump the list of misspelled words')
-    parser.add_option('-i', dest='interactive', action='store_true',
-                      help='interactively fix the file')
     parser.add_option('-s', dest='script_output', metavar='file',
                       help='create a shell script to interactively correct'
                            ' the files - script saved to the given file')
@@ -214,16 +212,13 @@ def main():
     if opts.dump_ms:
         for word, correction in ms.dump_misspelling_list():
             output.write('%s %s\n' % (word, correction))
-    if not opts.interactive:
-        if not opts.script_output:
-            return 2 if output_normal(ms,
-                                      filenames=filenames,
-                                      output=output) else 0
-        else:
-            output_sed_script(ms, parser, opts, filenames=filenames)
+
+    if opts.script_output:
+        output_sed_script(ms, parser, opts, filenames=filenames)
     else:
-        print('Interactive mode not implemented yet.',
-              file=sys.stderr)
+        return 2 if output_normal(ms,
+                                  filenames=filenames,
+                                  output=output) else 0
 
 if __name__ == '__main__':
     sys.exit(main())
