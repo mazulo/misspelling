@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Check files against a list of commonly misspelled words.
+"""Checks files against a list of commonly misspelled words.
 
 Wikipedia contains a large number of proper nouns and technical
 terms. Traditional spell-checking in this case is problematic.
@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 
 import codecs
 import io
-import optparse
+import argparse
 import os
 import re
 import sys
@@ -129,17 +129,17 @@ def output_normal(ms, filenames, output):
     return found
 
 
-def output_sed_script(ms, parser, opts, filenames):
+def output_sed_script(ms, parser, args, filenames):
     """Output a series of portable sed commands to change the file."""
-    if os.path.exists(opts.script_output):
+    if os.path.exists(args.script_output):
         # Emit an error is the file already exists in case the user
         # forgets to give the file - but does give source files.
         parser.error('The sed script file "%s" must not exist.' %
-                     opts.script_output)
+                     args.script_output)
 
     sg = Suggestions()
 
-    with io.open(opts.script_output, 'w') as sed_script:
+    with io.open(args.script_output, 'w') as sed_script:
         for filename in filenames:
             errors, results = ms.check(filename)
             for res in results:
@@ -177,47 +177,47 @@ def expand_directories(path_list):
 
 def main():
     """Entry point."""
-    parser = optparse.OptionParser(
-        usage='Usage: %prog [-f file_list] [files]',
+    parser = argparse.ArgumentParser(
         description=__doc__.split('\n')[0],
-        epilog='  files: Zero or more files to check.',
-        version='%prog {0}'.format(misspellings.__version__),
         prog='misspellings')
-    parser.add_option('-f', dest='file_list', metavar='file',
-                      help='file containing list of files to check')
-    parser.add_option('-m', dest='ms_file', metavar='file',
-                      help='file containing list of misspelled words &'
-                           ' corrections')
-    parser.add_option('-d', dest='dump_ms', action='store_true',
-                      help='dump the list of misspelled words')
-    parser.add_option('-s', dest='script_output', metavar='file',
-                      help='create a shell script to interactively correct'
-                           ' the files - script saved to the given file')
-    opts, filenames = parser.parse_args()
+    parser.add_argument('-f', dest='file_list', metavar='file',
+                        help='file containing list of files to check')
+    parser.add_argument('-m', dest='ms_file', metavar='file',
+                        help='file containing list of misspelled words and'
+                        'corrections')
+    parser.add_argument('-d', dest='dump_ms', action='store_true',
+                        help='dump the list of misspelled words')
+    parser.add_argument('-s', dest='script_output', metavar='file',
+                        help='create a shell script to interactively correct '
+                        'the files - script saved to the given file')
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s ' + misspellings.__version__)
+    parser.add_argument('files', nargs='*',
+                        help='files to check')
+    args = parser.parse_args()
 
-    if opts.file_list:
+    if args.file_list:
         try:
-            filenames += parse_file_list(opts.file_list)
+            args.files += parse_file_list(args.file_list)
         except IOError as exception:
             parser.error(exception)
-            return 1
 
     output = codecs.getwriter('utf-8')(sys.stdout.buffer
                                        if hasattr(sys.stdout, 'buffer')
                                        else sys.stdout)
 
-    ms = misspellings.Misspellings(misspelling_file=opts.ms_file)
-    filenames = expand_directories(filenames)
+    ms = misspellings.Misspellings(misspelling_file=args.ms_file)
+    args.files = expand_directories(args.files)
 
-    if opts.dump_ms:
+    if args.dump_ms:
         for word, correction in ms.dump_misspelling_list():
             output.write('%s %s\n' % (word, correction))
 
-    if opts.script_output:
-        output_sed_script(ms, parser, opts, filenames=filenames)
+    if args.script_output:
+        output_sed_script(ms, parser, args, filenames=args.files)
     else:
         return 2 if output_normal(ms,
-                                  filenames=filenames,
+                                  filenames=args.files,
                                   output=output) else 0
 
 if __name__ == '__main__':
