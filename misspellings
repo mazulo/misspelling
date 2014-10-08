@@ -25,6 +25,7 @@ import io
 import argparse
 import os
 import re
+import signal
 import sys
 
 import misspellings_lib as misspellings
@@ -160,8 +161,8 @@ def expand_directories(path_list):
             yield path
 
 
-def main():
-    """Entry point."""
+def _main():
+    """Internal main entry point."""
     parser = argparse.ArgumentParser(
         description=__doc__.split('\n')[0],
         prog='misspellings')
@@ -204,6 +205,22 @@ def main():
         return 2 if output_normal(ms,
                                   filenames=args.files,
                                   output=output) else 0
+
+
+def main():
+    """Main entry point."""
+    try:
+        # Exit on broken pipe.
+        signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+    except AttributeError:  # pragma: no cover
+        # SIGPIPE is not available on Windows.
+        pass
+
+    try:
+        return _main()
+    except KeyboardInterrupt:  # pragma: no cover
+        return 2  # pragma: no cover
+
 
 if __name__ == '__main__':
     sys.exit(main())
