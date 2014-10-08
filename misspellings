@@ -65,21 +65,6 @@ class Suggestions(object):
         return suggestion
 
 
-def print_file_context(fn, target_line_num, context=5):
-    """Show a line from a file in context."""
-    line_num = 1
-    start_line = target_line_num - context
-    end_line = target_line_num + context
-    with io.open(fn, 'r') as f:
-        for line in f:
-            if (line_num > start_line) and (line_num < end_line):
-                if line_num == target_line_num:
-                    sys.stdout.write('+%5d %s' % (line_num, line))
-                else:
-                    sys.stdout.write(' %5d %s' % (line_num, line))
-            line_num += 1
-
-
 def parse_file_list(filename):
     """Show a line from a file in context."""
     f = sys.stdin
