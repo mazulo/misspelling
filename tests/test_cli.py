@@ -7,7 +7,6 @@ import subprocess
 import unittest
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
-LOG_PATH = os.path.join(BASE_PATH, 'logs')
 CLI = os.path.join('..', 'misspellings')
 
 
@@ -24,12 +23,6 @@ class MisspellingsCLITestCase(unittest.TestCase):
       files: Zero or more files to check.
 
     """
-
-    def setUp(self):
-        try:
-            os.mkdir(LOG_PATH)
-        except:
-            pass
 
     def testGoodFile(self):
         p = subprocess.Popen([CLI, 'nine_mispellings.c'],

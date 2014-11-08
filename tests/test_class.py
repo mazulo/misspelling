@@ -10,16 +10,9 @@ import misspellings_lib as misspellings
 
 
 BASE_PATH = os.path.dirname(__file__)
-LOG_PATH = os.path.join(BASE_PATH, 'logs')
 
 
 class MisspellingsTestCase(unittest.TestCase):
-
-    def setUp(self):
-        try:
-            os.mkdir(LOG_PATH)
-        except:
-            pass
 
     def testMissingMSList(self):
         with self.assertRaises(IOError):
