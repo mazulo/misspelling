@@ -12,7 +12,7 @@ import misspellings_lib as misspellings
 BASE_PATH = os.path.dirname(__file__)
 
 
-class MisspellingsTestCase(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     def test_missing_ms_list(self):
         with self.assertRaises(IOError):

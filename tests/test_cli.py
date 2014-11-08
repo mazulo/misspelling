@@ -6,11 +6,12 @@ import os
 import subprocess
 import unittest
 
+
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 CLI = os.path.join('..', 'misspellings')
 
 
-class MisspellingsCLITestCase(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     """Test the CLI.
 
