@@ -8,7 +8,7 @@ import unittest
 
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
-CLI = os.path.join('..', 'misspellings')
+CLI = os.path.join(BASE_PATH, os.pardir, 'misspellings')
 
 
 class Tests(unittest.TestCase):
