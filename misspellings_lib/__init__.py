@@ -6,14 +6,17 @@ Take a list of files, check them against a list of misspelled words.
 
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 from __future__ import unicode_literals
 
+import collections
 import io
 import json
 import os
 import re
 import string
-from collections import defaultdict
 
 
 __version__ = '3.0'
@@ -62,7 +65,7 @@ class Misspellings(object):
 
         """
         if misspelling_file:
-            self._misspelling_dict = defaultdict(list)
+            self._misspelling_dict = collections.defaultdict(list)
             with io.open(misspelling_file, 'r') as f:
                 for line in f:
                     bad_word, correction = line.strip().split(' ', 1)
