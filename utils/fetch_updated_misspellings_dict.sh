@@ -3,7 +3,7 @@
 repository_root=$(dirname "${BASH_SOURCE[0]}")
 json_filename="$repository_root/../misspellings_lib/wikipedia.json"
 
-url='http://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines'
+url='https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines'
 
 {
     echo '{'
