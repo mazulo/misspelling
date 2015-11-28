@@ -164,7 +164,7 @@ def expand_directories(path_list):
 def _main():
     """Internal main entry point."""
     parser = argparse.ArgumentParser(
-        description=__doc__.split('\n')[0],
+        description=__doc__.split('\n')[0] if __doc__ else None,
         prog='misspellings')
     parser.add_argument('-f', dest='file_list', metavar='file',
                         help='file containing list of files to check')
