@@ -42,7 +42,7 @@ class TestCommand(Command):
 with open('README.rst') as readme:
     setup(
         cmdclass={'test': TestCommand},
-        name='misspellings',
+        name='misspellings_hurkman',
         version=version(),
         url='https://github.com/lyda/misspell-check',
         author='Kevin Lyda',
