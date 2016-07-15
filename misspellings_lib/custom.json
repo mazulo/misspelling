@@ -1,6 +1,8 @@
 {
     "explicity": ["explicitly"],
     "explicitley": ["explicitly"],
+    "cancellation": ["cancelation"],
+    "cancelled": ["canceled"],
     "frustrum": ["frustum"],
     "hashabilty": ["hashability"],
     "moil": ["mohel", "soil"],
@@ -11,5 +13,7 @@
     "refernce": ["reference", "references"],
     "suport": ["support"],
     "styleistic": ["stylistic"],
-    "unconditionnally": ["unconditionally"]
+    "unconditionnally": ["unconditionally"],
+    "please": ["never-say-please"],
+    "successfully": ["never-say-successfully"]
 }
