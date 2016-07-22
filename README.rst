@@ -22,6 +22,13 @@ cause a number of false positives. In particular ``ok->OK`` was
 removed (ok is frequently used in perl tests for instance).
 
 
+Opinionated version
+===================
+
+This includes custom additions that should be considered opinionated, such as
+cancellation vs. cancelation. This is not recommended for anyone's use.
+
+
 Example
 =======
 
