@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import os
 import unittest
 
-import misspellings_lib as misspellings
+import misspellings_lib_hurkman as misspellings
 
 
 BASE_PATH = os.path.dirname(__file__)

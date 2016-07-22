@@ -15,7 +15,7 @@ import unittest
 
 def version():
     """Return version string."""
-    with open('misspellings_lib/__init__.py') as input_file:
+    with open('misspellings_lib_hurkman/__init__.py') as input_file:
         for line in input_file:
             if line.startswith('__version__'):
                 return ast.parse(line).body[0].value.s
@@ -51,7 +51,7 @@ with open('README.rst') as readme:
         description='A tool to detect misspellings with opinionated additions',
         long_description=readme.read(),
         packages=['misspellings_lib_hurkman'],
-        package_data={'misspellings_lib': ['custom.json', 'wikipedia.json']},
+        package_data={'misspellings_lib_hurkman': ['custom.json', 'wikipedia.json']},
         scripts=['misspellings', ],
         keywords='check, code, spelling, spellcheck',
         license='GNU General Public License v3',

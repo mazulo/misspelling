@@ -28,7 +28,7 @@ import re
 import signal
 import sys
 
-import misspellings_lib as misspellings
+import misspellings_lib_hurkman as misspellings
 
 
 EXCLUDED_RE = re.compile('\.(py[co]|s?o|a)$')
