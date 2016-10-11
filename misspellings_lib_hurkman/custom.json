@@ -21,5 +21,14 @@
     "styleistic": ["stylistic"],
     "unconditionnally": ["unconditionally"],
     "please": ["never-say-please"],
-    "successfully": ["never-say-successfully"]
+    "successfully": ["never-say-successfully"],
+    "tranfer": ["transfer"],
+    "certifcate": ["certificate"],
+    "certficate": ["certificate"],
+    "certifcates": ["certificate"],
+    "certficates": ["certificate"],
+    "convertble": ["convertible"],
+    "esahres": ["eshares"],
+    "securites": ["securities"],
+    "securties": ["securities"],
 }
