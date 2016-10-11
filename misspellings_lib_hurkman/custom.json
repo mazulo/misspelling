@@ -1,4 +1,9 @@
 {
+    "corpration": ["corporation"],
+    "copoation": ["corporation"],
+    "corpoation": ["corporation"],
+    "corpation": ["corporation"],
+    "corportion": ["corporation"],
     "explicity": ["explicitly"],
     "explicitley": ["explicitly"],
     "cancelation": ["cancellation"],
