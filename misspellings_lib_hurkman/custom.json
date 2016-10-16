@@ -22,6 +22,7 @@
     "unconditionnally": ["unconditionally"],
     "please": ["never-say-please"],
     "successfully": ["never-say-successfully"],
+    "successfull": ["never-say-successful"],
     "tranfer": ["transfer"],
     "certifcate": ["certificate"],
     "certficate": ["certificate"],
@@ -31,4 +32,8 @@
     "esahres": ["eshares"],
     "securites": ["securities"],
     "securties": ["securities"],
+    "convertable": ["convertible"],
+    "adress": ["address"],
+    "addres": ["address"],
+    "e-mail": ["email"],
 }
