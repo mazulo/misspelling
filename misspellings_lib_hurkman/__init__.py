@@ -19,11 +19,11 @@ import re
 import string
 
 
-__version__ = '10.2'
+__version__ = '10.3'
 
 
-_NORM_REGEX = re.compile('([A-Z][A-Za-z]*)')
-_WORD_REGEX = re.compile('[\s_0-9\W]+', flags=re.UNICODE)
+_NORM_REGEX = re.compile(r'([A-Z][A-Za-z]*)')
+_WORD_REGEX = re.compile(r'[\s_0-9\W]+', flags=re.UNICODE)
 
 
 def normalize(word):
