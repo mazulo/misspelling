@@ -45,7 +45,7 @@ with open('README.rst') as readme:
         name='misspellings_hurkman',
         version=version(),
         url='https://github.com/erichurkman/misspellings',
-        download_url='https://github.com/erichurkman/misspellings/tarball/10.1',
+        download_url='https://github.com/erichurkman/misspellings/tarball/10.2',
         author='Eric Hurkman',
         author_email='erichurkman@gmail.com',
         description='A tool to detect misspellings with opinionated additions',
