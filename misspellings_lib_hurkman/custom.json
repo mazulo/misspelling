@@ -35,5 +35,6 @@
     "convertable": ["convertible"],
     "adress": ["address"],
     "addres": ["address"],
-    "e-mail": ["email"]
+    "e-mail": ["email"],
+    "mixpanel": ["mixpanel-is-dead-to-us"]
 }
