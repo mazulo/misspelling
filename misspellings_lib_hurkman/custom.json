@@ -35,5 +35,7 @@
     "convertable": ["convertible"],
     "adress": ["address"],
     "addres": ["address"],
-    "e-mail": ["email"]
+    "e-mail": ["email"],
+    "porfolio": ["portfolio"],
+    "portifolio": ["portfolio"]
 }
