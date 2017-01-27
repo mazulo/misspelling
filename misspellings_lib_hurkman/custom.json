@@ -37,5 +37,6 @@
     "addres": ["address"],
     "e-mail": ["email"],
     "porfolio": ["portfolio"],
-    "portifolio": ["portfolio"]
+    "portifolio": ["portfolio"],
+    "debugger": ["debugger-is-not-allowed"]
 }
