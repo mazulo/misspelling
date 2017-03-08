@@ -9,6 +9,7 @@
     "cancelation": ["cancellation"],
     "cancelled": ["canceled"],
     "dependant": ["dependent"],
+    "descritor": ["descriptor"],
     "frustrum": ["frustum"],
     "hashabilty": ["hashability"],
     "moil": ["mohel", "soil"],
@@ -27,6 +28,7 @@
     "certifcate": ["certificate"],
     "certficate": ["certificate"],
     "certifcates": ["certificate"],
+    "certifiacte": ["certificate"],
     "certficates": ["certificate"],
     "convertble": ["convertible"],
     "esahres": ["eshares"],
@@ -36,7 +38,11 @@
     "adress": ["address"],
     "addres": ["address"],
     "e-mail": ["email"],
+    "mixpanel": ["mixpanel-is-dead-to-us"],
     "porfolio": ["portfolio"],
     "portifolio": ["portfolio"],
-    "nessicary": ["necessary"]
+    "nessicary": ["necessary"],
+    "debugger": ["debugger-is-not-allowed"],
+    "deleware": ["delaware"],
+    "definently": ["definitely"]
 }
