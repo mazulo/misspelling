@@ -41,5 +41,7 @@
     "mixpanel": ["mixpanel-is-dead-to-us"],
     "porfolio": ["portfolio"],
     "portifolio": ["portfolio"],
-    "debugger": ["debugger-is-not-allowed"]
+    "debugger": ["debugger-is-not-allowed"],
+    "deleware": ["delaware"],
+    "definently": ["definitely"]
 }
