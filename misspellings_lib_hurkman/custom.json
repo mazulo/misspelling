@@ -44,5 +44,6 @@
     "nessicary": ["necessary"],
     "debugger": ["debugger-is-not-allowed"],
     "deleware": ["delaware"],
-    "definently": ["definitely"]
+    "definently": ["definitely"],
+    "RequestFactory": ["ban-request-factory"]
 }
