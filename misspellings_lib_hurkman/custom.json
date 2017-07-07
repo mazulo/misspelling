@@ -45,5 +45,6 @@
     "debugger": ["debugger-is-not-allowed"],
     "deleware": ["delaware"],
     "definently": ["definitely"],
-    "RequestFactory": ["ban-request-factory"]
+    "RequestFactory": ["ban-request-factory"],
+    "lorem": ["lorem-ipsum-text"]
 }
