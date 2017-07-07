@@ -19,7 +19,7 @@ import re
 import string
 
 
-__version__ = '10.3'
+__version__ = '10.4'
 
 
 _NORM_REGEX = re.compile(r'([A-Z][A-Za-z]*)')
