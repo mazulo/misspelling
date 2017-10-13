@@ -48,5 +48,6 @@
     "RequestFactory": ["ban-request-factory"],
     "uuid1": ["use-uuid4-not-uuid1"],
     "simplejson": ["use-json-instead"],
-    "lorem": ["lorem-ipsum-text"]
+    "lorem": ["lorem-ipsum-text"],
+    "ASC728": ["ASC718"]
 }
