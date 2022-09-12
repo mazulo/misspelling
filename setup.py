@@ -15,7 +15,7 @@ import unittest
 
 def version():
     """Return version string."""
-    with open('misspellings_lib_hurkman/__init__.py') as input_file:
+    with open('misspellings_lib/__init__.py') as input_file:
         for line in input_file:
             if line.startswith('__version__'):
                 return ast.parse(line).body[0].value.s
@@ -42,16 +42,16 @@ class TestCommand(Command):
 with open('README.rst') as readme:
     setup(
         cmdclass={'test': TestCommand},
-        name='misspellings_hurkman',
+        name='misspellings_lib',
         version=version(),
-        url='https://github.com/erichurkman/misspellings',
-        download_url='https://github.com/erichurkman/misspellings/tarball/%s' % version(),
-        author='Eric Hurkman',
-        author_email='erichurkman@gmail.com',
+        url='https://github.com/mazulo/misspellings',
+        download_url='https://github.com/mazulo/misspellings/tarball/%s' % version(),
+        author='Patrick Mazulo',
+        author_email='pmazulo@gmail.com',
         description='A tool to detect misspellings with opinionated additions',
         long_description=readme.read(),
-        packages=['misspellings_lib_hurkman'],
-        package_data={'misspellings_lib_hurkman': ['custom.json', 'wikipedia.json']},
+        packages=['misspellings_lib'],
+        package_data={'misspellings_lib': ['custom.json', 'wikipedia.json']},
         scripts=['misspellings', ],
         keywords='check, code, spelling, spellcheck',
         license='GNU General Public License v3',

@@ -9,3 +9,4 @@ tests/logs
 .tox
 .coverage
 .travis-solo/
+.idea/
