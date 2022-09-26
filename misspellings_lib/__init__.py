@@ -18,7 +18,7 @@ import re
 import string
 
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 
 _NORM_REGEX = re.compile(r'(?<=[a-z])(?=[A-Z])')
