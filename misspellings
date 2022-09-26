@@ -228,8 +228,10 @@ def _main():
     args.files = expand_directories(args.files)
 
     if args.dump_ms:
-        for word, correction in ms.dump_misspelling_list():
-            output.write('%s %s\n' % (word, correction))
+        filename = args.dump_ms
+        with open(filename, "+w") as correction_file:
+            for word, correction in ms.dump_misspelling_list():
+                correction_file.write('{} {}\n'.format(word, correction))
 
     if args.script_output:
         output_sed_script(ms, parser, args, filenames=args.files)
