@@ -121,6 +121,24 @@ def output_normal(ms, filenames, output):
     return found
 
 
+def export_result_to_file(ms, filenames, output):
+    """
+    Save the list of misspelled words and their corrections into a file.
+    """
+
+    for filename in filenames:
+        _, results = ms.check(filename)
+        for res in results:
+            output.write(
+                '{}:{}: {} -> {}\n'.format(
+                    res[0],
+                    res[1],
+                    res[2],
+                    ','.join(['"%s"' % w for w in ms.suggestions(res[2])]),
+                )
+            )
+
+
 def output_sed_script(ms, parser, args, filenames):
     """Output a series of portable sed commands to change the file."""
     if os.path.exists(args.script_output):
@@ -203,8 +221,13 @@ def _main():
         '-s',
         dest='script_output',
         metavar='file',
-        help='create a shell script to interactively correct '
-        'the files - script saved to the given file',
+        help='create a shell script to interactively correct the files - script saved to the given file',
+    )
+    parser.add_argument(
+        '-x',
+        dest='export_file',
+        metavar='file',
+        help='Export the list of misspelled words into a file',
     )
     parser.add_argument(
         '--version',
@@ -227,11 +250,16 @@ def _main():
     ms = misspellings.Misspellings(misspelling_file=args.ms_file)
     args.files = expand_directories(args.files)
 
+    if args.export_file:
+        filename = args.export_file
+        with open(filename, 'w', encoding='utf-8') as correction_file:
+            export_result_to_file(
+                ms, filenames=args.files, output=correction_file
+            )
+
     if args.dump_ms:
-        filename = args.dump_ms
-        with open(filename, "+w") as correction_file:
-            for word, correction in ms.dump_misspelling_list():
-                correction_file.write('{} {}\n'.format(word, correction))
+        for word, correction in ms.dump_misspelling_list():
+            output.write('%s %s\n' % (word, correction))
 
     if args.script_output:
         output_sed_script(ms, parser, args, filenames=args.files)

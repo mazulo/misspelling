@@ -11,3 +11,5 @@ tests/logs
 .travis-solo/
 .idea/
 misspellings_lib.egg-info/
+.netrc
+.pypirc
