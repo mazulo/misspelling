@@ -10,3 +10,4 @@ tests/logs
 .coverage
 .travis-solo/
 .idea/
+misspellings_lib.egg-info/

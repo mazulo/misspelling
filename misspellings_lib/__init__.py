@@ -3,7 +3,6 @@
 """Misspellings module.
 
 Take a list of files, check them against a list of misspelled words.
-
 """
 
 from __future__ import absolute_import
@@ -73,8 +72,9 @@ class Misspellings(object):
         else:
             self._misspelling_dict = {}
             for dictionary in ['wikipedia.json', 'custom.json']:
-                with io.open(os.path.join(os.path.dirname(__file__),
-                                          dictionary)) as input_file:
+                with io.open(
+                    os.path.join(os.path.dirname(__file__), dictionary)
+                ) as input_file:
                     self._misspelling_dict.update(json.load(input_file))
 
     def check(self, filename):
@@ -96,8 +96,8 @@ class Misspellings(object):
                     for line in f:
                         for word in split_words(line):
                             if (
-                                word in self._misspelling_dict or
-                                word.lower() in self._misspelling_dict
+                                word in self._misspelling_dict
+                                or word.lower() in self._misspelling_dict
                             ):
                                 results.append([filename, line_ct, word])
                         line_ct += 1
@@ -118,9 +118,11 @@ class Misspellings(object):
 
         """
         suggestions = set(self._misspelling_dict.get(word, [])).union(
-            set(self._misspelling_dict.get(word.lower(), [])))
-        return sorted(same_case(source=word, destination=w)
-                      for w in suggestions)
+            set(self._misspelling_dict.get(word.lower(), []))
+        )
+        return sorted(
+            same_case(source=word, destination=w) for w in suggestions
+        )
 
     def dump_misspelling_list(self):
         """Returns a list of misspelled words and corrections."""

@@ -12,7 +12,6 @@ the files in a body of source code.
 
 This tool uses the English wordlist from Wikipedia in order to scan
 source code and identify misspelled words.
-
 """
 
 from __future__ import absolute_import
@@ -33,7 +32,8 @@ import misspellings_lib as misspellings
 
 EXCLUDED_RE = re.compile('\.(py[co]|s?o|a)$')
 EXCLUDED_DIRS_RE = re.compile(
-    r'^(.*\..*egg|.*\..*egg-info|\.bzr|\.git|\.hg|\.svn|\.tox|CVS)$')
+    r'^(.*\..*egg|.*\..*egg-info|\.bzr|\.git|\.hg|\.svn|\.tox|CVS)$'
+)
 
 
 def get_a_line(filename, lineno):
@@ -55,9 +55,10 @@ class Suggestions(object):
         if word not in self.last_suggestions:
             self.last_suggestions[word] = suggestions[0]
         line = get_a_line(filename, lineno)
-        sys.stdout.write('> %s\nReplace "%s" with one of %s\nChoose [%s]:' %
-                         (line, word, ','.join(suggestions),
-                          self.last_suggestions[word]))
+        sys.stdout.write(
+            '> %s\nReplace "%s" with one of %s\nChoose [%s]:'
+            % (line, word, ','.join(suggestions), self.last_suggestions[word])
+        )
         suggestion = sys.stdin.readline().strip()
         if not suggestion:
             suggestion = self.last_suggestions[word]
@@ -87,7 +88,7 @@ def esc_sed(raw_text):
 
 def esc_file(raw_text):
     """Escape chars for a file name on a shell command line."""
-    return raw_text.replace('\'', '\'"\'"\'')
+    return raw_text.replace("'", "'\"'\"'")
 
 
 # Output routines.
@@ -103,9 +104,14 @@ def output_normal(ms, filenames, output):
         errors, results = ms.check(filename)
         for res in results:
             output.write(
-                '%s:%d: %s -> %s\n' %
-                (res[0], res[1], res[2], ','.join(
-                    ['"%s"' % w for w in ms.suggestions(res[2])])))
+                '%s:%d: %s -> %s\n'
+                % (
+                    res[0],
+                    res[1],
+                    res[2],
+                    ','.join(['"%s"' % w for w in ms.suggestions(res[2])]),
+                )
+            )
             found = True
 
         for err in errors:
@@ -120,8 +126,9 @@ def output_sed_script(ms, parser, args, filenames):
     if os.path.exists(args.script_output):
         # Emit an error is the file already exists in case the user
         # forgets to give the file - but does give source files.
-        parser.error('The sed script file "%s" must not exist.' %
-                     args.script_output)
+        parser.error(
+            'The sed script file "%s" must not exist.' % args.script_output
+        )
 
     sg = Suggestions()
 
@@ -134,14 +141,20 @@ def output_sed_script(ms, parser, args, filenames):
                     suggestion = suggestions[0]
                 else:
                     suggestion = sg.get_suggestion(
-                        res[0], res[1], res[2], suggestions)
+                        res[0], res[1], res[2], suggestions
+                    )
                 if suggestion != res[2]:
                     sed_script.write(
                         'cp "%(f)s" "%(f)s,"\n'
                         'sed "%(lc)ds/%(wrd)s/%(rep)s/" "%(f)s" > "%(f)s,"\n'
                         'mv "%(f)s," "%(f)s"\n'
-                        % {'f': esc_file(res[0]), 'lc': res[1],
-                           'wrd': esc_sed(res[2]), 'rep': esc_sed(suggestion)})
+                        % {
+                            'f': esc_file(res[0]),
+                            'lc': res[1],
+                            'wrd': esc_sed(res[2]),
+                            'rep': esc_sed(suggestion),
+                        }
+                    )
             for err in errors:
                 sys.stderr.write('ERROR: %s\n' % err)
 
@@ -155,8 +168,9 @@ def expand_directories(path_list):
                     if not EXCLUDED_RE.search(name):
                         yield os.path.join(root, name)
 
-                dirnames[:] = [d for d in dirnames
-                               if not EXCLUDED_DIRS_RE.match(d)]
+                dirnames[:] = [
+                    d for d in dirnames if not EXCLUDED_DIRS_RE.match(d)
+                ]
         else:
             yield path
 
@@ -165,21 +179,39 @@ def _main():
     """Internal main entry point."""
     parser = argparse.ArgumentParser(
         description=__doc__.split('\n')[0] if __doc__ else None,
-        prog='misspellings')
-    parser.add_argument('-f', dest='file_list', metavar='file',
-                        help='file containing list of files to check')
-    parser.add_argument('-m', dest='ms_file', metavar='file',
-                        help='file containing list of misspelled words and'
-                        'corrections')
-    parser.add_argument('-d', dest='dump_ms', action='store_true',
-                        help='dump the list of misspelled words')
-    parser.add_argument('-s', dest='script_output', metavar='file',
-                        help='create a shell script to interactively correct '
-                        'the files - script saved to the given file')
-    parser.add_argument('--version', action='version',
-                        version='%(prog)s ' + misspellings.__version__)
-    parser.add_argument('files', nargs='*',
-                        help='files to check')
+        prog='misspellings',
+    )
+    parser.add_argument(
+        '-f',
+        dest='file_list',
+        metavar='file',
+        help='file containing list of files to check',
+    )
+    parser.add_argument(
+        '-m',
+        dest='ms_file',
+        metavar='file',
+        help='file containing list of misspelled words and' 'corrections',
+    )
+    parser.add_argument(
+        '-d',
+        dest='dump_ms',
+        action='store_true',
+        help='dump the list of misspelled words',
+    )
+    parser.add_argument(
+        '-s',
+        dest='script_output',
+        metavar='file',
+        help='create a shell script to interactively correct '
+        'the files - script saved to the given file',
+    )
+    parser.add_argument(
+        '--version',
+        action='version',
+        version='%(prog)s ' + misspellings.__version__,
+    )
+    parser.add_argument('files', nargs='*', help='files to check')
     args = parser.parse_args()
 
     if args.file_list:
@@ -188,9 +220,9 @@ def _main():
         except IOError as exception:
             parser.error(exception)
 
-    output = codecs.getwriter('utf-8')(sys.stdout.buffer
-                                       if hasattr(sys.stdout, 'buffer')
-                                       else sys.stdout)
+    output = codecs.getwriter('utf-8')(
+        sys.stdout.buffer if hasattr(sys.stdout, 'buffer') else sys.stdout
+    )
 
     ms = misspellings.Misspellings(misspelling_file=args.ms_file)
     args.files = expand_directories(args.files)
@@ -202,9 +234,9 @@ def _main():
     if args.script_output:
         output_sed_script(ms, parser, args, filenames=args.files)
     else:
-        return 2 if output_normal(ms,
-                                  filenames=args.files,
-                                  output=output) else 0
+        return (
+            2 if output_normal(ms, filenames=args.files, output=output) else 0
+        )
 
 
 def main():

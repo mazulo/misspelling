@@ -26,70 +26,84 @@ class Tests(unittest.TestCase):
     """
 
     def test_good_file(self):
-        p = subprocess.Popen([CLI, 'nine_mispellings.c'],
-                             cwd=BASE_PATH,
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE)
+        p = subprocess.Popen(
+            [CLI, 'nine_mispellings.c'],
+            cwd=BASE_PATH,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
         (output, error_output) = p.communicate()
         self.assertEqual(error_output.decode(), '')
         self.assertEqual(len(output.decode().split('\n')), 10)
         self.assertEqual(p.returncode, 2)
 
     def test_bad_file(self):
-        p = subprocess.Popen([CLI, 'missing.c'],
-                             cwd=BASE_PATH,
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE)
+        p = subprocess.Popen(
+            [CLI, 'missing.c'],
+            cwd=BASE_PATH,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
         (output, error_output) = p.communicate()
         self.assertEqual(output.decode(), '')
         self.assertEqual(len(error_output.decode().split('\n')), 2)
         self.assertEqual(p.returncode, 0)
 
     def test_good_flag_f(self):
-        p = subprocess.Popen([CLI, '-f', 'good_file_list'],
-                             cwd=BASE_PATH,
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE)
+        p = subprocess.Popen(
+            [CLI, '-f', 'good_file_list'],
+            cwd=BASE_PATH,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
         (output, error_output) = p.communicate()
         self.assertEqual(error_output.decode(), '')
         self.assertEqual(len(output.decode().split('\n')), 10)
         self.assertEqual(p.returncode, 2)
 
     def test_bad_flag_f(self):
-        p = subprocess.Popen([CLI, '-f', 'broken_file_list'],
-                             cwd=BASE_PATH,
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE)
+        p = subprocess.Popen(
+            [CLI, '-f', 'broken_file_list'],
+            cwd=BASE_PATH,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
         (output, error_output) = p.communicate()
         self.assertEqual(output.decode(), '')
         self.assertEqual(len(error_output.decode().split('\n')), 2)
         self.assertEqual(p.returncode, 0)
 
     def test_bad_flag_m(self):
-        p = subprocess.Popen([CLI, '-d', '-m', 'broken_msl.txt'],
-                             cwd=BASE_PATH,
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE)
+        p = subprocess.Popen(
+            [CLI, '-d', '-m', 'broken_msl.txt'],
+            cwd=BASE_PATH,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
         (output, error_output) = p.communicate()
         self.assertIn('ValueError', error_output.decode())
         self.assertEqual(output.decode(), '')
         self.assertEqual(p.returncode, 1)
 
     def test_good_flag_m(self):
-        p = subprocess.Popen([CLI, '-d', '-m', 'small_msl.txt'],
-                             cwd=BASE_PATH,
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE)
+        p = subprocess.Popen(
+            [CLI, '-d', '-m', 'small_msl.txt'],
+            cwd=BASE_PATH,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
         (output, error_output) = p.communicate()
         self.assertEqual(error_output.decode(), '')
         self.assertEqual(len(output.decode().split('\n')), 3)
         self.assertEqual(p.returncode, 0)
 
     def test_bad_flag_s(self):
-        p = subprocess.Popen([CLI, '-s', 'various_spellings.c'],
-                             cwd=BASE_PATH,
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE)
+        p = subprocess.Popen(
+            [CLI, '-s', 'various_spellings.c'],
+            cwd=BASE_PATH,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
         (output, error_output) = p.communicate()
         self.assertIn('must not exist', error_output.decode())
         self.assertEqual(output.decode(), '')
@@ -100,14 +114,14 @@ class Tests(unittest.TestCase):
         good_out = os.path.join(BASE_PATH, 'various_spellings.good_out')
         if os.path.exists(test_out):
             os.unlink(test_out)
-        p = subprocess.Popen([CLI, '-s', test_out,
-                              'various_spellings.c'],
-                             cwd=BASE_PATH,
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE)
-        (output, error_output) = p.communicate(
-            input='\n'.encode('utf8'))
+        p = subprocess.Popen(
+            [CLI, '-s', test_out, 'various_spellings.c'],
+            cwd=BASE_PATH,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+        )
+        (output, error_output) = p.communicate(input='\n'.encode('utf8'))
         self.assertEqual(error_output.decode(), '')
         self.assertIn('withdrawl', output.decode())
         self.assertEqual(p.returncode, 0)
@@ -119,16 +133,20 @@ class Tests(unittest.TestCase):
         self.assertListEqual(test_contents, good_contents)
 
     def test_standard_in(self):
-        p = subprocess.Popen([CLI, '-f', '-'],
-                             cwd=BASE_PATH,
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE)
+        p = subprocess.Popen(
+            [CLI, '-f', '-'],
+            cwd=BASE_PATH,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+        )
         (output, error_output) = p.communicate(
-            input='nine_mispellings.c\n'.encode('utf8'))
+            input='nine_mispellings.c\n'.encode('utf8')
+        )
         self.assertEqual(error_output.decode(), '')
         self.assertEqual(len(output.decode().split('\n')), 10)
         self.assertEqual(p.returncode, 2)
+
 
 if __name__ == '__main__':
     unittest.main()

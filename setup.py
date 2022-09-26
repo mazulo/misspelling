@@ -3,7 +3,6 @@
 """Installer for misspelling-check.
 
 This installs the misspelling command and the misspellings.check module.
-
 """
 
 import ast
@@ -45,14 +44,17 @@ with open('README.rst') as readme:
         name='misspellings_lib',
         version=version(),
         url='https://github.com/mazulo/misspellings',
-        download_url='https://github.com/mazulo/misspellings/tarball/%s' % version(),
+        download_url='https://github.com/mazulo/misspellings/tarball/%s'
+        % version(),
         author='Patrick Mazulo',
         author_email='pmazulo@gmail.com',
         description='A tool to detect misspellings with opinionated additions',
         long_description=readme.read(),
         packages=['misspellings_lib'],
         package_data={'misspellings_lib': ['custom.json', 'wikipedia.json']},
-        scripts=['misspellings', ],
+        scripts=[
+            'misspellings',
+        ],
         keywords='check, code, spelling, spellcheck',
         license='GNU General Public License v3',
         platforms=['POSIX'],
@@ -63,5 +65,6 @@ with open('README.rst') as readme:
             'Operating System :: OS Independent',
             'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3',
-            'Topic :: Utilities'
-        ])
+            'Topic :: Utilities',
+        ],
+    )
