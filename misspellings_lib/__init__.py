@@ -13,7 +13,7 @@ import re
 import string
 
 
-__version__ = '1.0.4'
+__version__ = '1.0.5'
 
 
 _NORM_REGEX = re.compile(r'(?<=[a-z])(?=[A-Z])')
@@ -71,7 +71,7 @@ class Misspellings(object):
                     bad_word,
                     correction,
                 ) in custom_dict_with_misspelled_words.items():
-                    self._misspelling_dict[bad_word].append(correction)
+                    self._misspelling_dict[bad_word].append(correction[0])
         else:
             self._misspelling_dict = {}
             for dictionary in ['wikipedia.json', 'custom.json']:
