@@ -13,3 +13,4 @@ tests/logs
 misspellings_lib.egg-info/
 .netrc
 .pypirc
+.python-version

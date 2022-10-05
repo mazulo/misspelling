@@ -212,6 +212,12 @@ def _main():
         help='file containing list of misspelled words and' 'corrections',
     )
     parser.add_argument(
+        '-j',
+        dest='json_file',
+        metavar='file',
+        help='Json file containing misspelled words and corrections',
+    )
+    parser.add_argument(
         '-d',
         dest='dump_ms',
         action='store_true',
@@ -247,15 +253,36 @@ def _main():
         sys.stdout.buffer if hasattr(sys.stdout, 'buffer') else sys.stdout
     )
 
-    ms = misspellings.Misspellings(misspelling_file=args.ms_file)
-    args.files = expand_directories(args.files)
+    if args.ms_file:
+        ms = misspellings.Misspellings(misspelling_file=args.ms_file)
+        args.files = expand_directories(args.files)
 
-    if args.export_file:
-        filename = args.export_file
-        with open(filename, 'w', encoding='utf-8') as correction_file:
-            export_result_to_file(
-                ms, filenames=args.files, output=correction_file
-            )
+        if args.export_file:
+            filename = args.export_file
+            with open(filename, 'w', encoding='utf-8') as correction_file:
+                export_result_to_file(
+                    ms, filenames=args.files, output=correction_file
+                )
+    elif args.json_file:
+        ms = misspellings.Misspellings(misspelling_json_file=args.json_file)
+        args.files = expand_directories(args.files)
+
+        if args.export_file:
+            filename = args.export_file
+            with open(filename, 'w', encoding='utf-8') as correction_file:
+                export_result_to_file(
+                    ms, filenames=args.files, output=correction_file
+                )
+    else:
+        ms = misspellings.Misspellings()
+        args.files = expand_directories(args.files)
+
+        if args.export_file:
+            filename = args.export_file
+            with open(filename, 'w', encoding='utf-8') as correction_file:
+                export_result_to_file(
+                    ms, filenames=args.files, output=correction_file
+                )
 
     if args.dump_ms:
         for word, correction in ms.dump_misspelling_list():

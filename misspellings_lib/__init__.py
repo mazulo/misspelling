@@ -5,11 +5,6 @@
 Take a list of files, check them against a list of misspelled words.
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import collections
 import io
 import json
@@ -18,7 +13,7 @@ import re
 import string
 
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 
 _NORM_REGEX = re.compile(r'(?<=[a-z])(?=[A-Z])')
@@ -50,13 +45,12 @@ class Misspellings(object):
 
     """Detects misspelled words in files."""
 
-    def __init__(self, misspelling_file=None):
-        """Initialises an Misspellings instance.
+    def __init__(self, misspelling_file=None, misspelling_json_file=None):
+        """Initialises a Misspellings instance.
 
         Args:
-          files: List of files to check.  More can be added with add().
-          misspelling_file: Filename with a list of misspelled words
-                            and their alternatives.
+          misspelling_file: Filename with a list of misspelled words and their corrections.
+          misspelling_json_file: JSON filename of misspelled words and their corrections.
 
         Raises:
           IOError: Raised if misspelling_file can't be found.
@@ -68,6 +62,12 @@ class Misspellings(object):
             with io.open(misspelling_file, 'r') as f:
                 for line in f:
                     bad_word, correction = line.strip().split(' ', 1)
+                    self._misspelling_dict[bad_word].append(correction)
+        elif misspelling_json_file:
+            self._misspelling_dict = collections.defaultdict(list)
+            with io.open(misspelling_json_file, 'r') as custom_json_file:
+                custom_dict_with_misspelled_words = json.load(custom_json_file)
+                for bad_word, correction in custom_dict_with_misspelled_words.items():
                     self._misspelling_dict[bad_word].append(correction)
         else:
             self._misspelling_dict = {}
