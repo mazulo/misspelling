@@ -67,7 +67,10 @@ class Misspellings(object):
             self._misspelling_dict = collections.defaultdict(list)
             with io.open(misspelling_json_file, 'r') as custom_json_file:
                 custom_dict_with_misspelled_words = json.load(custom_json_file)
-                for bad_word, correction in custom_dict_with_misspelled_words.items():
+                for (
+                    bad_word,
+                    correction,
+                ) in custom_dict_with_misspelled_words.items():
                     self._misspelling_dict[bad_word].append(correction)
         else:
             self._misspelling_dict = {}

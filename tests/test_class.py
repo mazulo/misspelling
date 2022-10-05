@@ -14,15 +14,11 @@ BASE_PATH = os.path.dirname(__file__)
 class TestMisspellings:
     def test_missing_ms_list(self):
         with pytest.raises(IOError):
-            Misspellings(
-                os.path.join(BASE_PATH, 'missing_msl.txt')
-            )
+            Misspellings(os.path.join(BASE_PATH, 'missing_msl.txt'))
 
     def test_broken_ms_list(self):
         with pytest.raises(ValueError):
-            Misspellings(
-                os.path.join(BASE_PATH, 'broken_msl.txt')
-            )
+            Misspellings(os.path.join(BASE_PATH, 'broken_msl.txt'))
 
     def test_missing_file(self):
         ms = Misspellings()
@@ -67,7 +63,9 @@ class TestUtilityFunction:
     def test_split_words_with_underscores(self):
         assert ['one', 'two', 'three'] == split_words('one_two_three')
         assert ['one', 'two', 'three'] == split_words('one__two__three')
-        assert ['one', 'two', 'three', 'four'] == split_words('one_two_three four')
+        assert ['one', 'two', 'three', 'four'] == split_words(
+            'one_two_three four'
+        )
 
     def test_split_words_with_punctuation(self):
         assert ['one', 'two'] == split_words('one, two')
@@ -78,9 +76,15 @@ class TestUtilityFunction:
 
     def test_split_words_with_camel_case(self):
         assert ['one', 'Two', 'Three'] == split_words('oneTwoThree')
-        assert ['one', 'Two', 'Three', 'Four'] == split_words('oneTwoThreeFour')
-        assert ['one', 'Two', 'Three', 'four'] == split_words('oneTwoThree_four')
-        assert ['one', 'Two', 'Three', 'four', 'five'] == split_words('oneTwoThree_four five')
+        assert ['one', 'Two', 'Three', 'Four'] == split_words(
+            'oneTwoThreeFour'
+        )
+        assert ['one', 'Two', 'Three', 'four'] == split_words(
+            'oneTwoThree_four'
+        )
+        assert ['one', 'Two', 'Three', 'four', 'five'] == split_words(
+            'oneTwoThree_four five'
+        )
         assert ['foo', 'Up', 'To', 'Bar'] == split_words('fooUpToBar')
 
     def test_split_words_with_other_characters(self):

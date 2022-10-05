@@ -31,9 +31,9 @@ class TestCli:
             stdout=subprocess.PIPE,
         )
         (output, error_output) = p.communicate()
-        assert error_output.decode() ==  ''
-        assert len(output.decode().split('\n')) ==  10
-        assert p.returncode ==  2
+        assert error_output.decode() == ''
+        assert len(output.decode().split('\n')) == 10
+        assert p.returncode == 2
 
     def test_bad_file(self):
         p = subprocess.Popen(
@@ -70,7 +70,6 @@ class TestCli:
         assert output.decode() == ''
         assert len(error_output.decode().split('\n')) == 2
         assert p.returncode == 0
-
 
     def test_bad_flag_m(self):
         p = subprocess.Popen(
