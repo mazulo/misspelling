@@ -4,7 +4,7 @@
 
 Wikipedia contains a large number of proper nouns and technical
 terms. Traditional spell-checking in this case is problematic.
-Instead it has a page that people can use to list commonly misspelled
+Instead, it has a page that people can use to list commonly misspelled
 words and to then use that to find misspellings.
 
 A similar approach can be taken to spell-checking (or misspell-checking)
@@ -13,11 +13,6 @@ the files in a body of source code.
 This tool uses the English wordlist from Wikipedia in order to scan
 source code and identify misspelled words.
 """
-
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
 
 import codecs
 import io

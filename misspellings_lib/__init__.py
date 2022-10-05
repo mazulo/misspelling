@@ -13,7 +13,7 @@ import re
 import string
 
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 
 _NORM_REGEX = re.compile(r'(?<=[a-z])(?=[A-Z])')
@@ -117,8 +117,8 @@ class Misspellings(object):
           List of zero or more suggested replacements for word.
 
         """
-        suggestions = set(self._misspelling_dict.get(word, [])).union(
-            set(self._misspelling_dict.get(word.lower(), []))
+        suggestions = set(self._misspelling_dict.get(word, set())).union(
+            set(self._misspelling_dict.get(word.lower(), set()))
         )
         return sorted(
             same_case(source=word, destination=w) for w in suggestions
