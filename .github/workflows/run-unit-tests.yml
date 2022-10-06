@@ -18,13 +18,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Switch to Current Branch
-        run: git checkout ${{ env.BRANCH }}
+      - name: Check out repository code
+        uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
-      - uses: actions/setup-python@v4
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
