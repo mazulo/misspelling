@@ -2,13 +2,10 @@
 misspellings
 ============
 
-.. image:: https://travis-ci.org/myint/misspellings.svg?branch=master
-    :target: https://travis-ci.org/myint/misspellings
-    :alt: Build status
-
-
 Spell checker for code
 ======================
+
+> This is a project originally forked from https://github.com/erichurkman/misspellings
 
 This is a Python library and tool to check for misspelled words in
 source code. It does this by looking for words from a list of
@@ -29,28 +26,11 @@ This includes custom additions that should be considered opinionated, such as
 cancellation vs. cancelation. This is not recommended for anyone's use.
 
 
-Example
-=======
-
-To try it out, merely run the following (using an old coreutils
-source tree as an example)::
-
-    $ git clone git://git.sv.gnu.org/coreutils -b v8.10 coreutils
-    $ find coreutils -name '*.c' | misspellings -f -
-    coreutils/src/cat.c:754: efficency -> "efficiency"
-    coreutils/src/comm.c:198: funtion -> "function"
-    coreutils/src/expr.c:21: seperate -> "separate"
-    coreutils/src/pr.c:1417: accomodate -> "accommodate"
-    coreutils/src/tac.c:342: unneccessary -> "unnecessary"
-    coreutils/src/test.c:91: supressed -> "suppressed"
-
-
 Contributions
 =============
 
 Contributions are welcome! Please add unit tests for new features
-or bug fixes. To run all the unit tests run ``./setup.py test``.
-If you have `tox`_ installed, just run ``tox``.
+or bug fixes. To run all the unit tests run `pytest tests/`.
 
 You can review `coverage`_ of added tests by running
 ``coverage run setup.py test`` and then running
@@ -60,7 +40,7 @@ Note that tests are run on `Travis`_ for all supported python
 versions whenever the tree on github is pushed to.
 
 The packaged version is available via ``pip`` or ``easy_install``
-as ``misspellings``. The project page is on `pypi`_:
+as ``misspellings-lib``. The project page is on `pypi`_:
 
 The source code is available in the following locations:
 
@@ -69,6 +49,7 @@ The source code is available in the following locations:
 - Github: https://github.com/lyda/misspell-check
 - Gitorious: https://gitorious.org/uu/misspell-check
 - Sourceforge: https://sourceforge.net/p/misspell-check
+- Mazulo's GitHub: https://github.com/mazulo/misspelling
 
 Pull requests on any of those platforms or emailed patches are fine.
 
