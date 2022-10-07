@@ -1,14 +1,13 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import os
+from pathlib import Path
 
 import pytest
 
-from misspellings_lib import Misspellings, normalize, same_case, split_words
+from misspellings_lib.misspellings import Misspellings
+from utils import normalize, same_case, split_words
 
 
-BASE_PATH = os.path.dirname(__file__)
+BASE_PATH = Path(__file__).parents[0]
 
 
 class TestMisspellings:
@@ -18,7 +17,7 @@ class TestMisspellings:
 
     def test_broken_ms_list(self):
         with pytest.raises(ValueError):
-            Misspellings(os.path.join(BASE_PATH, 'broken_msl.txt'))
+            Misspellings(os.path.join(BASE_PATH, 'assets/broken_msl.txt'))
 
     def test_missing_file(self):
         ms = Misspellings()
@@ -28,7 +27,7 @@ class TestMisspellings:
     def test_good_file(self):
         ms = Misspellings()
         errors, results = ms.check(
-            os.path.join(BASE_PATH, 'nine_mispellings.json')
+            os.path.join(BASE_PATH, 'assets/nine_misspellings.json')
         )
         assert len(errors) == 0
         assert len(results) == 9
@@ -36,7 +35,7 @@ class TestMisspellings:
     def test_more_complex_file(self):
         ms = Misspellings()
         errors, results = ms.check(
-            os.path.join(BASE_PATH, 'various_spellings.c')
+            os.path.join(BASE_PATH, 'assets/various_spellings.c')
         )
         assert len(errors) == 0
         assert len(results) == 7
