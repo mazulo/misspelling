@@ -5,19 +5,12 @@
 This installs the misspelling command and the misspellings.check module.
 """
 
-import ast
 import sys
 from distutils.core import Command
 from distutils.core import setup
 import unittest
 
-
-def version():
-    """Return version string."""
-    with open('misspellings_lib/__init__.py') as input_file:
-        for line in input_file:
-            if line.startswith('__version__'):
-                return ast.parse(line).body[0].value.s
+from utils import get_version
 
 
 class TestCommand(Command):
@@ -42,16 +35,15 @@ with open('README.md') as readme:
     setup(
         cmdclass={'test': TestCommand},
         name='misspellings_lib',
-        version=version(),
+        version=get_version(),
         url='https://github.com/mazulo/misspellings',
-        download_url='https://github.com/mazulo/misspellings/tarball/%s'
-        % version(),
+        download_url=f'https://github.com/mazulo/misspellings/tarball/{get_version()}',
         author='Patrick Mazulo',
         author_email='pmazulo@gmail.com',
         description='A tool to detect misspellings with opinionated additions',
         long_description=readme.read(),
         packages=['misspellings_lib'],
-        package_data={'misspellings_lib': ['custom.json', 'wikipedia.json']},
+        package_data={'misspellings_lib': ['assets/custom.json', 'assets/wikipedia.json']},
         scripts=[
             'misspellings',
         ],

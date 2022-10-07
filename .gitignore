@@ -1,4 +1,3 @@
-MANIFEST
 build/
 dist/
 htmlcov/
@@ -14,3 +13,4 @@ misspellings_lib.egg-info/
 .netrc
 .pypirc
 .python-version
+.pytest_cache

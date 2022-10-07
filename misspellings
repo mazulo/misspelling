@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-"""Checks files against a list of commonly misspelled words.
+"""
+Checks files against a list of commonly misspelled words.
 
 Wikipedia contains a large number of proper nouns and technical
 terms. Traditional spell-checking in this case is problematic.
@@ -15,227 +16,20 @@ source code and identify misspelled words.
 """
 
 import codecs
-import io
-import argparse
-import os
-import re
-import signal
 import sys
+from typing import Optional
 
-import misspellings_lib as misspellings
-
-
-EXCLUDED_RE = re.compile('\.(py[co]|s?o|a)$')
-EXCLUDED_DIRS_RE = re.compile(
-    r'^(.*\..*egg|.*\..*egg-info|\.bzr|\.git|\.hg|\.svn|\.tox|CVS)$'
+from misspellings_lib.misspellings import Misspellings
+from utils import (
+    MisspellingArgumentParser,
+    parse_file_list,
+    expand_directories,
 )
 
 
-def get_a_line(filename, lineno):
-    """Read a specific line from a file."""
-    # Perhaps caching this would be nice, but assuming not an insane
-    # number of misspellings.
-    return io.open(filename, 'r').readlines()[lineno - 1].rstrip()
-
-
-class Suggestions(object):
-
-    """Class to query user on which correction should be used."""
-
-    def __init__(self):
-        self.last_suggestions = {}
-
-    def get_suggestion(self, filename, lineno, word, suggestions):
-        """Show line from file, a misspelled word and request replacement."""
-        if word not in self.last_suggestions:
-            self.last_suggestions[word] = suggestions[0]
-        line = get_a_line(filename, lineno)
-        sys.stdout.write(
-            '> %s\nReplace "%s" with one of %s\nChoose [%s]:'
-            % (line, word, ','.join(suggestions), self.last_suggestions[word])
-        )
-        suggestion = sys.stdin.readline().strip()
-        if not suggestion:
-            suggestion = self.last_suggestions[word]
-        else:
-            self.last_suggestions[word] = suggestion
-        return suggestion
-
-
-def parse_file_list(filename):
-    """Show a line from a file in context."""
-    f = sys.stdin
-    try:
-        if filename != '-':
-            f = io.open(filename, 'r')
-        return [line.strip() for line in f]
-    except IOError:
-        raise
-    finally:
-        if f != sys.stdin:
-            f.close()
-
-
-def esc_sed(raw_text):
-    """Escape chars for a sed command on a shell command line."""
-    return raw_text.replace('"', '\\"').replace('/', '\\/')
-
-
-def esc_file(raw_text):
-    """Escape chars for a file name on a shell command line."""
-    return raw_text.replace("'", "'\"'\"'")
-
-
-# Output routines.
-def output_normal(ms, filenames, output):
-    """Print a list of misspelled words and their corrections.
-
-    Return True if misspellings are found.
-
-    """
-    found = False
-
-    for filename in filenames:
-        errors, results = ms.check(filename)
-        for res in results:
-            output.write(
-                '%s:%d: %s -> %s\n'
-                % (
-                    res[0],
-                    res[1],
-                    res[2],
-                    ','.join(['"%s"' % w for w in ms.suggestions(res[2])]),
-                )
-            )
-            found = True
-
-        for err in errors:
-            sys.stderr.write('ERROR: %s\n' % err)
-        output.flush()
-
-    return found
-
-
-def export_result_to_file(ms, filenames, output):
-    """
-    Save the list of misspelled words and their corrections into a file.
-    """
-
-    for filename in filenames:
-        _, results = ms.check(filename)
-        for res in results:
-            output.write(
-                '{}:{}: {} -> {}\n'.format(
-                    res[0],
-                    res[1],
-                    res[2],
-                    ','.join(['"%s"' % w for w in ms.suggestions(res[2])]),
-                )
-            )
-
-
-def output_sed_script(ms, parser, args, filenames):
-    """Output a series of portable sed commands to change the file."""
-    if os.path.exists(args.script_output):
-        # Emit an error is the file already exists in case the user
-        # forgets to give the file - but does give source files.
-        parser.error(
-            'The sed script file "%s" must not exist.' % args.script_output
-        )
-
-    sg = Suggestions()
-
-    with io.open(args.script_output, 'w') as sed_script:
-        for filename in filenames:
-            errors, results = ms.check(filename)
-            for res in results:
-                suggestions = ms.suggestions(res[2])
-                if len(suggestions) == 1:
-                    suggestion = suggestions[0]
-                else:
-                    suggestion = sg.get_suggestion(
-                        res[0], res[1], res[2], suggestions
-                    )
-                if suggestion != res[2]:
-                    sed_script.write(
-                        'cp "%(f)s" "%(f)s,"\n'
-                        'sed "%(lc)ds/%(wrd)s/%(rep)s/" "%(f)s" > "%(f)s,"\n'
-                        'mv "%(f)s," "%(f)s"\n'
-                        % {
-                            'f': esc_file(res[0]),
-                            'lc': res[1],
-                            'wrd': esc_sed(res[2]),
-                            'rep': esc_sed(suggestion),
-                        }
-                    )
-            for err in errors:
-                sys.stderr.write('ERROR: %s\n' % err)
-
-
-def expand_directories(path_list):
-    """Return list with directories replaced their contained files."""
-    for path in path_list:
-        if os.path.isdir(path):
-            for root, dirnames, filenames in os.walk(path):
-                for name in filenames:
-                    if not EXCLUDED_RE.search(name):
-                        yield os.path.join(root, name)
-
-                dirnames[:] = [
-                    d for d in dirnames if not EXCLUDED_DIRS_RE.match(d)
-                ]
-        else:
-            yield path
-
-
-def _main():
+def main() -> Optional[int]:
     """Internal main entry point."""
-    parser = argparse.ArgumentParser(
-        description=__doc__.split('\n')[0] if __doc__ else None,
-        prog='misspellings',
-    )
-    parser.add_argument(
-        '-f',
-        dest='file_list',
-        metavar='file',
-        help='file containing list of files to check',
-    )
-    parser.add_argument(
-        '-m',
-        dest='ms_file',
-        metavar='file',
-        help='file containing list of misspelled words and' 'corrections',
-    )
-    parser.add_argument(
-        '-j',
-        dest='json_file',
-        metavar='file',
-        help='Json file containing misspelled words and corrections',
-    )
-    parser.add_argument(
-        '-d',
-        dest='dump_ms',
-        action='store_true',
-        help='dump the list of misspelled words',
-    )
-    parser.add_argument(
-        '-s',
-        dest='script_output',
-        metavar='file',
-        help='create a shell script to interactively correct the files - script saved to the given file',
-    )
-    parser.add_argument(
-        '-x',
-        dest='export_file',
-        metavar='file',
-        help='Export the list of misspelled words into a file',
-    )
-    parser.add_argument(
-        '--version',
-        action='version',
-        version='%(prog)s ' + misspellings.__version__,
-    )
-    parser.add_argument('files', nargs='*', help='files to check')
+    parser = MisspellingArgumentParser()
     args = parser.parse_args()
 
     if args.file_list:
@@ -248,63 +42,41 @@ def _main():
         sys.stdout.buffer if hasattr(sys.stdout, 'buffer') else sys.stdout
     )
 
-    if args.ms_file:
-        ms = misspellings.Misspellings(misspelling_file=args.ms_file)
+    if args.misspelling_file:
+        misspelling = Misspellings(misspelling_file=args.misspelling_file.as_posix())
         args.files = expand_directories(args.files)
 
         if args.export_file:
             filename = args.export_file
             with open(filename, 'w', encoding='utf-8') as correction_file:
-                export_result_to_file(
-                    ms, filenames=args.files, output=correction_file
-                )
+                misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     elif args.json_file:
-        ms = misspellings.Misspellings(misspelling_json_file=args.json_file)
+        misspelling = Misspellings(misspelling_json_file=args.json_file.as_posix())
         args.files = expand_directories(args.files)
 
         if args.export_file:
-            filename = args.export_file
+            filename = args.export_file.as_posix()
             with open(filename, 'w', encoding='utf-8') as correction_file:
-                export_result_to_file(
-                    ms, filenames=args.files, output=correction_file
-                )
+                misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     else:
-        ms = misspellings.Misspellings()
+        misspelling = Misspellings()
         args.files = expand_directories(args.files)
 
         if args.export_file:
-            filename = args.export_file
+            filename = args.export_file.as_posix()
             with open(filename, 'w', encoding='utf-8') as correction_file:
-                export_result_to_file(
-                    ms, filenames=args.files, output=correction_file
-                )
+                misspelling.export_result_to_file(filenames=args.files, output=correction_file)
 
-    if args.dump_ms:
-        for word, correction in ms.dump_misspelling_list():
+    if args.dump_misspelling:
+        for word, correction in misspelling.dump_misspelling_list():
             output.write('%s %s\n' % (word, correction))
 
     if args.script_output:
-        output_sed_script(ms, parser, args, filenames=args.files)
+        misspelling.output_sed_script(parser, args, filenames=args.files)
     else:
         return (
-            2 if output_normal(ms, filenames=args.files, output=output) else 0
+            2 if misspelling.output_normal(filenames=args.files, output=output) else 0
         )
-
-
-def main():
-    """Main entry point."""
-    try:
-        # Exit on broken pipe.
-        signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-    except AttributeError:  # pragma: no cover
-        # SIGPIPE is not available on Windows.
-        pass
-
-    try:
-        return _main()
-    except KeyboardInterrupt:  # pragma: no cover
-        return 2  # pragma: no cover
-
 
 if __name__ == '__main__':
     sys.exit(main())
