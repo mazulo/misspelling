@@ -4,9 +4,13 @@ import sys
 from pathlib import Path
 from typing import Iterable, List, NoReturn, Union
 
-EXCLUDED_RE = re.compile(r'\.(py[co]|s?o|a)$')
+EXCLUDED_RE = re.compile(
+    r'\.(py[co]|s?o|a|sh|txt|pylintrc|coverage|gitignore|python-version)'
+    '|LICENSE$'
+)
 EXCLUDED_DIRS_RE = re.compile(
-    r'^(.*\..*egg|.*\..*egg-info|\.bzr|\.git|\.hg|\.svn|\.github|CVS|\.pytest_cache|\.bin|)$'
+    r'^(.*\..*egg|.*\..*egg-info|\.bzr|\.git|\.hg|\.svn|\.github|CVS|'
+    '\.pytest_cache|bin|\.idea|assets|tests/assets|)$'
 )
 
 

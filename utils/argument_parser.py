@@ -31,10 +31,10 @@ class MisspellingArgumentParser(Tap):
     def __init__(self):
         super().__init__(underscores_to_dashes=True)
 
-    file_list: Optional[Path] = None   # file containing list of files to check
+    file_list: Optional[Path] = None   # File containing list of files to check
     misspelling_file: Optional[
         Path
-    ] = None   # file containing list of misspelled words and corrections
+    ] = None   # File containing list of misspelled words and corrections
     json_file: Optional[
         Path
     ] = None   # Json file containing misspelled words and corrections
