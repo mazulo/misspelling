@@ -1,81 +1,24 @@
-import collections
-import json
 import os
-import pathlib
 import sys
 from codecs import StreamWriter
-from typing import Iterable, List, TextIO, Tuple, Union
+from typing import Union, List, Iterable, TextIO, Tuple
 
 from tap.tap import TapType
 
-from utils import Suggestion, esc_file, esc_sed, same_case, split_words
+from utils import split_words, same_case, esc_file, esc_sed
+from .misspelling_interface import IMisspellingChecker
 
 
-class Misspellings:
-    """
-    Detects misspelled words in files.
-    """
+class MisspellingChecker(IMisspellingChecker):
 
-    def __init__(
-        self, misspelling_file: pathlib.Path = None, misspelling_json_file: pathlib.Path = None
-    ) -> None:
-        """Initialises a Misspellings instance.
-
-        Args:
-          misspelling_file: Filename with a list of misspelled words and their corrections.
-          misspelling_json_file: JSON filename of misspelled words and their corrections.
-
-        Raises:
-          IOError: Raised if misspelling_file can't be found.
-          ValueError: Raised if misspelling_file isn't correctly formatted.
-
+    def check(self, filename: str) -> Tuple[List[Exception], List[List[Union[str, int, str]]]]:
         """
-        self.suggestion = Suggestion()
-        if misspelling_file:
-            self._misspelling_dict = collections.defaultdict(list)
-            with open(misspelling_file, 'r') as f:
-                for line in f:
-                    bad_word, correction = line.strip().split(' ', 1)
-                    self._misspelling_dict[bad_word].append(correction)
-        elif misspelling_json_file:
-            self._misspelling_dict = collections.defaultdict(list)
-            with open(misspelling_json_file, 'r') as custom_json_file:
-                custom_dict_with_misspelled_words = json.load(custom_json_file)
-                for (
-                    bad_word,
-                    correction,
-                ) in custom_dict_with_misspelled_words.items():
-                    self._misspelling_dict[bad_word].append(correction[0])
-        else:
-            self._misspelling_dict = {}
-            file_paths = self._get_default_json_files()
-            for dictionary in file_paths:
-                with open(
-                    os.path.join(os.path.dirname(__file__), dictionary)
-                ) as input_file:
-                    self._misspelling_dict.update(json.load(input_file))
-
-    @staticmethod
-    def _get_default_json_files() -> List[pathlib.Path]:
-        assets_dir = pathlib.Path(__file__).parents[1] / 'assets'
-        file_paths = [
-            assets_dir.joinpath(file)
-            for file in os.listdir(assets_dir.as_posix())
-            if os.path.isfile(assets_dir.joinpath(file))
-        ]
-        return file_paths
-
-    def check(
-        self, filename: str
-    ) -> Tuple[List[Exception], List[List[Union[str, int, str]]]]:
-        """Checks the files for misspellings.
-
+        Checks the files for misspellings.
         Returns:
           (errors, results)
           errors: List of system errors, usually file access errors.
           results: List of spelling errors - each tuple is filename,
                    line number and misspelled word.
-
         """
         errors = []
         results = []
@@ -86,8 +29,8 @@ class Misspellings:
                     for line in f:
                         for word in split_words(line):
                             if (
-                                word in self._misspelling_dict
-                                or word.lower() in self._misspelling_dict
+                                    word in self._misspelling_dict
+                                    or word.lower() in self._misspelling_dict
                             ):
                                 results.append([filename, line_ct, word])
                         line_ct += 1
@@ -97,9 +40,9 @@ class Misspellings:
                 errors.append(exception)
         return errors, results
 
-    def suggestions(self, word: str) -> List[str]:
-        """Returns a list of suggestions for a misspelled word.
-
+    def get_suggestions(self, word: str) -> List[str]:
+        """
+        Returns a list of suggestions for a misspelled word.
         Args:
           word: The word to check.
 
@@ -114,7 +57,7 @@ class Misspellings:
             same_case(source=word, destination=w) for w in suggestions
         )
 
-    def dump_misspelling_list(self):
+    def dump_corrections(self) -> List[List[str]]:
         """Returns a list of misspelled words and corrections."""
         results = []
         for bad_word in sorted(self._misspelling_dict.keys()):
@@ -122,11 +65,7 @@ class Misspellings:
                 results.append([bad_word, correction])
         return results
 
-    def output_normal(
-        self,
-        filenames: Union[List[str], Iterable[str]],
-        output: StreamWriter,
-    ) -> bool:
+    def print_result(self, filenames: Union[List[str], Iterable[str]], output: StreamWriter) -> bool:
         """
         Print a list of misspelled words and their corrections.
 
@@ -139,7 +78,7 @@ class Misspellings:
             errors, results = self.check(filename)
             for res in results:
                 suggestions = ','.join(
-                    ['"%s"' % w for w in self.suggestions(res[2])]
+                    ['"%s"' % w for w in self.get_suggestions(res[2])]
                 )
                 output.write(f'{res[0]}:{res[1]}: {res[2]} -> {suggestions}\n')
                 found = True
@@ -150,9 +89,7 @@ class Misspellings:
 
         return found
 
-    def export_result_to_file(
-        self, filenames: Union[List[str], Iterable[str]], output: TextIO
-    ) -> None:
+    def export_result_to_file(self, filenames: Union[List[str], Iterable[str]], output: TextIO) -> None:
         """
         Save the list of misspelled words and their corrections into a file.
         """
@@ -166,17 +103,12 @@ class Misspellings:
                         res[1],
                         res[2],
                         ','.join(
-                            ['"%s"' % w for w in self.suggestions(res[2])]
+                            ['"%s"' % w for w in self.get_suggestions(res[2])]
                         ),
                     )
                 )
 
-    def output_sed_script(
-        self,
-        parser: TapType,
-        args: TapType,
-        filenames: Union[List[str], Iterable[str]],
-    ) -> None:
+    def output_sed_commands(self, parser: TapType, args: TapType, filenames: Union[List[str], Iterable[str]]) -> None:
         """
         Output a series of portable sed commands to change the file.
         """
@@ -191,11 +123,11 @@ class Misspellings:
             for filename in filenames:
                 errors, results = self.check(filename)
                 for res in results:
-                    suggestions = self.suggestions(res[2])
+                    suggestions = self.get_suggestions(res[2])
                     if len(suggestions) == 1:
                         suggestion = suggestions[0]
                     else:
-                        suggestion = self.suggestion.get_suggestion(
+                        suggestion = self.suggestion_generator.get_suggestion(
                             res[0], res[1], res[2], suggestions
                         )
                     if suggestion != res[2]:
