@@ -17,7 +17,7 @@ class Misspellings:
     """
 
     def __init__(
-        self, misspelling_file: str = None, misspelling_json_file: str = None
+        self, misspelling_file: pathlib.Path = None, misspelling_json_file: pathlib.Path = None
     ) -> None:
         """Initialises a Misspellings instance.
 

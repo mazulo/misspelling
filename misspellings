@@ -40,28 +40,25 @@ def main() -> Optional[int]:
     )
 
     if args.misspelling_file:
-        misspelling = Misspellings(misspelling_file=args.misspelling_file.as_posix())
+        misspelling = Misspellings(misspelling_file=args.misspelling_file)
         args.files = expand_directories(args.files)
 
         if args.export_file:
-            filename = args.export_file
-            with open(filename, 'w', encoding='utf-8') as correction_file:
+            with open(args.export_file, 'w', encoding='utf-8') as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     elif args.json_file:
-        misspelling = Misspellings(misspelling_json_file=args.json_file.as_posix())
+        misspelling = Misspellings(misspelling_json_file=args.json_file)
         args.files = expand_directories(args.files)
 
         if args.export_file:
-            filename = args.export_file.as_posix()
-            with open(filename, 'w', encoding='utf-8') as correction_file:
+            with open(args.export_file, 'w', encoding='utf-8') as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     else:
         misspelling = Misspellings()
         args.files = expand_directories(args.files)
 
         if args.export_file:
-            filename = args.export_file.as_posix()
-            with open(filename, 'w', encoding='utf-8') as correction_file:
+            with open(args.export_file, 'w', encoding='utf-8') as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
 
     if args.dump_misspelling:
