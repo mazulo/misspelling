@@ -68,7 +68,12 @@ class TestCli:
 
     def test_bad_flag_m(self):
         p = subprocess.Popen(
-            [CLI, '--dump-misspelling', '--misspelling-file', 'assets/broken_msl.txt'],
+            [
+                CLI,
+                '--dump-misspelling',
+                '--misspelling-file',
+                'assets/broken_msl.txt',
+            ],
             cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
@@ -80,7 +85,12 @@ class TestCli:
 
     def test_good_flag_m(self):
         p = subprocess.Popen(
-            [CLI, '--dump-misspelling', '--misspelling-file', 'assets/small_msl.txt'],
+            [
+                CLI,
+                '--dump-misspelling',
+                '--misspelling-file',
+                'assets/small_msl.txt',
+            ],
             cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
@@ -92,7 +102,12 @@ class TestCli:
 
     def test_passing_misspelling_json_file(self):
         p = subprocess.Popen(
-            [CLI, '--dump-misspelling', '--json-file', 'assets/nine_misspellings.json'],
+            [
+                CLI,
+                '--dump-misspelling',
+                '--json-file',
+                'assets/nine_misspellings.json',
+            ],
             cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
@@ -115,12 +130,8 @@ class TestCli:
         assert p.returncode == 2
 
     def test_good_flag_s(self):
-        test_out = TEST_BASE_DIR.joinpath(
-            'assets/various_spellings.test_out'
-        )
-        good_out = TEST_BASE_DIR.joinpath(
-            'assets/various_spellings.good_out'
-        )
+        test_out = TEST_BASE_DIR.joinpath('assets/various_spellings.test_out')
+        good_out = TEST_BASE_DIR.joinpath('assets/various_spellings.good_out')
         if os.path.exists(test_out):
             os.unlink(test_out)
         p = subprocess.Popen(

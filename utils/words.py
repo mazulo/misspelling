@@ -1,4 +1,3 @@
-import io
 import re
 import string
 
@@ -31,7 +30,7 @@ def get_a_line(filename: str, lineno: int) -> str:
     """Read a specific line from a file."""
     # Perhaps caching this would be nice, but assuming not an insane
     # number of misspellings.
-    return io.open(filename, 'r').readlines()[lineno - 1].rstrip()
+    return open(filename, 'r').readlines()[lineno - 1].rstrip()
 
 
 def esc_sed(raw_text: str):
