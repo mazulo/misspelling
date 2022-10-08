@@ -3,8 +3,7 @@ import subprocess
 from pathlib import Path
 
 TEST_BASE_DIR = Path(__file__).parents[0]
-BASE_PATH = Path(__file__).parents[1]
-CLI = Path(__file__).parents[1].joinpath('misspellings').as_posix()
+CLI = Path(__file__).parents[1].joinpath('misspellings')
 
 
 class TestCli:
@@ -20,12 +19,9 @@ class TestCli:
     """
 
     def test_good_file(self):
-        nine_misspellings = TEST_BASE_DIR.joinpath(
-            'tests/assets/nine_misspellings.c'
-        ).as_posix()
         p = subprocess.Popen(
             [CLI, 'assets/nine_misspellings.c'],
-            cwd=TEST_BASE_DIR.as_posix(),
+            cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
         )
@@ -35,10 +31,9 @@ class TestCli:
         assert p.returncode == 2
 
     def test_bad_file(self):
-        missing = TEST_BASE_DIR.joinpath('assets/missing.c').as_posix()
         p = subprocess.Popen(
-            [CLI, missing],
-            cwd=BASE_PATH.as_posix(),
+            [CLI, 'assets/missing.c'],
+            cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
         )
@@ -48,12 +43,9 @@ class TestCli:
         assert p.returncode == 0
 
     def test_good_flag_f(self):
-        good_file_list = TEST_BASE_DIR.joinpath(
-            'assets/good_file_list'
-        ).as_posix()
         p = subprocess.Popen(
-            [CLI, '--file-list', good_file_list],
-            cwd=BASE_PATH.as_posix(),
+            [CLI, '--file-list', 'assets/good_file_list'],
+            cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
         )
@@ -63,12 +55,9 @@ class TestCli:
         assert p.returncode == 2
 
     def test_bad_flag_f(self):
-        broken_file_list = TEST_BASE_DIR.joinpath(
-            'assets/broken_file_list'
-        ).as_posix()
         p = subprocess.Popen(
-            [CLI, '--file-list', broken_file_list],
-            cwd=BASE_PATH.as_posix(),
+            [CLI, '--file-list', 'assets/broken_file_list'],
+            cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
         )
@@ -78,10 +67,9 @@ class TestCli:
         assert p.returncode == 0
 
     def test_bad_flag_m(self):
-        broken_msl = TEST_BASE_DIR.joinpath('assets/broken_msl.txt').as_posix()
         p = subprocess.Popen(
-            [CLI, '--dump-misspelling', '--misspelling-file', broken_msl],
-            cwd=BASE_PATH.as_posix(),
+            [CLI, '--dump-misspelling', '--misspelling-file', 'assets/broken_msl.txt'],
+            cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
         )
@@ -91,10 +79,9 @@ class TestCli:
         assert p.returncode == 1
 
     def test_good_flag_m(self):
-        small_msl = TEST_BASE_DIR.joinpath('assets/small_msl.txt').as_posix()
         p = subprocess.Popen(
-            [CLI, '--dump-misspelling', '--misspelling-file', small_msl],
-            cwd=BASE_PATH.as_posix(),
+            [CLI, '--dump-misspelling', '--misspelling-file', 'assets/small_msl.txt'],
+            cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
         )
@@ -104,12 +91,9 @@ class TestCli:
         assert p.returncode == 0
 
     def test_passing_misspelling_json_file(self):
-        nine_misspellings = TEST_BASE_DIR.joinpath(
-            'assets/nine_misspellings.json'
-        ).as_posix()
         p = subprocess.Popen(
-            [CLI, '--dump-misspelling', '--json-file', nine_misspellings],
-            cwd=BASE_PATH.as_posix(),
+            [CLI, '--dump-misspelling', '--json-file', 'assets/nine_misspellings.json'],
+            cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
         )
@@ -119,12 +103,9 @@ class TestCli:
         assert p.returncode == 0
 
     def test_bad_flag_s(self):
-        various_spellings = TEST_BASE_DIR.joinpath(
-            'assets/various_spellings.c'
-        ).as_posix()
         p = subprocess.Popen(
-            [CLI, '--script-output', various_spellings],
-            cwd=BASE_PATH.as_posix(),
+            [CLI, '--script-output', 'assets/various_spellings.c'],
+            cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
         )
@@ -136,23 +117,20 @@ class TestCli:
     def test_good_flag_s(self):
         test_out = TEST_BASE_DIR.joinpath(
             'assets/various_spellings.test_out'
-        ).as_posix()
+        )
         good_out = TEST_BASE_DIR.joinpath(
             'assets/various_spellings.good_out'
-        ).as_posix()
-        various_spellings = TEST_BASE_DIR.joinpath(
-            'assets/various_spellings.c'
-        ).as_posix()
+        )
         if os.path.exists(test_out):
             os.unlink(test_out)
         p = subprocess.Popen(
             [
                 CLI,
                 '--script-output',
-                'tests/assets/various_spellings.test_out',
-                'tests/assets/various_spellings.c',
+                'assets/various_spellings.test_out',
+                'assets/various_spellings.c',
             ],
-            cwd=BASE_PATH.as_posix(),
+            cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stdin=subprocess.PIPE,
@@ -169,18 +147,15 @@ class TestCli:
         assert test_contents == good_contents
 
     def test_standard_in(self):
-        nine_misspellings = TEST_BASE_DIR.joinpath(
-            'assets/nine_misspellings.c'
-        ).as_posix()
         p = subprocess.Popen(
             [CLI, '--file-list', '-'],
-            cwd=BASE_PATH.as_posix(),
+            cwd=TEST_BASE_DIR,
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stdin=subprocess.PIPE,
         )
         (output, error_output) = p.communicate(
-            input=f'tests/assets/nine_misspellings.c\n'.encode('utf8')
+            input=f'assets/nine_misspellings.c\n'.encode('utf8')
         )
         assert error_output.decode() == ''
         assert len(output.decode().split('\n')) == 10
