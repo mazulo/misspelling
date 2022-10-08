@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from misspellings_lib.misspellings import Misspellings
+from misspellings_lib import MisspellingDetector
 from utils import normalize, same_case, split_words
 
 BASE_PATH = Path(__file__).parents[0]
@@ -12,19 +12,19 @@ BASE_PATH = Path(__file__).parents[0]
 class TestMisspellings:
     def test_missing_ms_list(self):
         with pytest.raises(IOError):
-            Misspellings(os.path.join(BASE_PATH, 'missing_msl.txt'))
+            MisspellingDetector(os.path.join(BASE_PATH, 'missing_msl.txt'))
 
     def test_broken_ms_list(self):
         with pytest.raises(ValueError):
-            Misspellings(os.path.join(BASE_PATH, 'assets/broken_msl.txt'))
+            MisspellingDetector(os.path.join(BASE_PATH, 'assets/broken_msl.txt'))
 
     def test_missing_file(self):
-        ms = Misspellings()
+        ms = MisspellingDetector()
         errors, results = ms.check(os.path.join(BASE_PATH, 'missing_source.c'))
         assert errors
 
     def test_good_file(self):
-        ms = Misspellings()
+        ms = MisspellingDetector()
         errors, results = ms.check(
             os.path.join(BASE_PATH, 'assets/nine_misspellings.json')
         )
@@ -32,7 +32,7 @@ class TestMisspellings:
         assert len(results) == 9
 
     def test_more_complex_file(self):
-        ms = Misspellings()
+        ms = MisspellingDetector()
         errors, results = ms.check(
             os.path.join(BASE_PATH, 'assets/various_spellings.c')
         )

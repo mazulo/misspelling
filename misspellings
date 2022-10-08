@@ -19,7 +19,7 @@ import codecs
 import sys
 from typing import Optional
 
-from misspellings_lib.misspellings import Misspellings
+from misspellings_lib import MisspellingDetector
 from utils import (MisspellingArgumentParser, expand_directories,
                    parse_file_list)
 
@@ -40,21 +40,21 @@ def main() -> Optional[int]:
     )
 
     if args.misspelling_file:
-        misspelling = Misspellings(misspelling_file=args.misspelling_file)
+        misspelling = MisspellingDetector(misspelling_file=args.misspelling_file)
         args.files = expand_directories(args.files)
 
         if args.export_file:
             with open(args.export_file, 'w', encoding='utf-8') as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     elif args.json_file:
-        misspelling = Misspellings(misspelling_json_file=args.json_file)
+        misspelling = MisspellingDetector(misspelling_json_file=args.json_file)
         args.files = expand_directories(args.files)
 
         if args.export_file:
             with open(args.export_file, 'w', encoding='utf-8') as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     else:
-        misspelling = Misspellings()
+        misspelling = MisspellingDetector()
         args.files = expand_directories(args.files)
 
         if args.export_file:
@@ -62,14 +62,14 @@ def main() -> Optional[int]:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
 
     if args.dump_misspelling:
-        for word, correction in misspelling.dump_misspelling_list():
+        for word, correction in misspelling.dump_corrections():
             output.write('%s %s\n' % (word, correction))
 
     if args.script_output:
-        misspelling.output_sed_script(parser, args, filenames=args.files)
+        misspelling.output_sed_commands(parser, args, filenames=args.files)
     else:
         return (
-            2 if misspelling.output_normal(filenames=args.files, output=output) else 0
+            2 if misspelling.print_result(filenames=args.files, output=output) else 0
         )
 
 if __name__ == '__main__':

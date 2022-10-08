@@ -4,7 +4,7 @@ from typing import List
 from .words import get_a_line
 
 
-class Suggestion:
+class SuggestionGenerator:
     """Class to query which correction should be used."""
 
     def __init__(self):
