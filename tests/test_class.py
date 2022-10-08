@@ -6,7 +6,6 @@ import pytest
 from misspellings_lib.misspellings import Misspellings
 from utils import normalize, same_case, split_words
 
-
 BASE_PATH = Path(__file__).parents[0]
 
 

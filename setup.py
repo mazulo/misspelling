@@ -6,9 +6,8 @@ This installs the misspelling command and the misspellings.check module.
 """
 
 import sys
-from distutils.core import Command
-from distutils.core import setup
 import unittest
+from distutils.core import Command, setup
 
 from utils import get_version
 
@@ -43,7 +42,9 @@ with open('README.md') as readme:
         description='A tool to detect misspellings with opinionated additions',
         long_description=readme.read(),
         packages=['misspellings_lib'],
-        package_data={'misspellings_lib': ['assets/custom.json', 'assets/wikipedia.json']},
+        package_data={
+            'misspellings_lib': ['assets/custom.json', 'assets/wikipedia.json']
+        },
         scripts=[
             'misspellings',
         ],

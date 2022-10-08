@@ -3,10 +3,9 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Union, NoReturn, Iterable
+from typing import Iterable, NoReturn, Union
 
-
-EXCLUDED_RE = re.compile('\.(py[co]|s?o|a)$')
+EXCLUDED_RE = re.compile(r'\.(py[co]|s?o|a)$')
 EXCLUDED_DIRS_RE = re.compile(
     r'^(.*\..*egg|.*\..*egg-info|\.bzr|\.git|\.hg|\.svn|\.github|CVS|\.pytest_cache|\.bin|)$'
 )
@@ -23,7 +22,7 @@ def parse_file_list(filename: Path) -> Union[list[str], NoReturn]:
             f.close()
         return file_list
     except IOError as err:
-        print(f"ERRO NO ARQUIVO: {err}")
+        print(f'ERRO NO ARQUIVO: {err}')
         raise err
 
 

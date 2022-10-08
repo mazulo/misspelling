@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional, Union
 
 from tap import Tap
 
@@ -28,14 +28,25 @@ class MisspellingArgumentParser(Tap):
     source code and identify misspelled words.
     """
 
-    file_list: Optional[Path] = None # file containing list of files to check
-    misspelling_file: Optional[Path] = None # file containing list of misspelled words and corrections
-    json_file: Optional[Path] = None # Json file containing misspelled words and corrections
-    script_output: Optional[Path] = None # Create a shell script to interactively correct the files - script saved to the given file
-    export_file: Optional[Path] = None # Export the list of misspelled words into a file
-    dump_misspelling: bool = False # Dump the list of misspelled words
+    def __init__(self):
+        super().__init__(underscores_to_dashes=True)
+
+    file_list: Optional[Path] = None   # file containing list of files to check
+    misspelling_file: Optional[
+        Path
+    ] = None   # file containing list of misspelled words and corrections
+    json_file: Optional[
+        Path
+    ] = None   # Json file containing misspelled words and corrections
+    script_output: Optional[
+        Path
+    ] = None   # Create a shell script to interactively correct the files - script saved to the given file
+    export_file: Optional[
+        Path
+    ] = None   # Export the list of misspelled words into a file
+    dump_misspelling: bool = False   # Dump the list of misspelled words
     version: Optional[str] = f'misspellings: {get_version()}'
-    files: Optional[list[Path] | list[str]] = None # Files to check
+    files: Optional[list[Path] | list[str]] = None   # Files to check
 
     def configure(self) -> None:
         self.add_argument(

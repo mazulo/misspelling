@@ -20,11 +20,8 @@ import sys
 from typing import Optional
 
 from misspellings_lib.misspellings import Misspellings
-from utils import (
-    MisspellingArgumentParser,
-    parse_file_list,
-    expand_directories,
-)
+from utils import (MisspellingArgumentParser, expand_directories,
+                   parse_file_list)
 
 
 def main() -> Optional[int]:
