@@ -4,7 +4,7 @@ import os
 import pathlib
 import sys
 from codecs import StreamWriter
-from typing import Iterable, TextIO
+from typing import Iterable, List, TextIO, Tuple, Union
 
 from tap.tap import TapType
 
@@ -56,11 +56,10 @@ class Misspellings:
                     self._misspelling_dict.update(json.load(input_file))
 
     @staticmethod
-    def _get_default_json_files() -> list[str]:
+    def _get_default_json_files() -> List[pathlib.Path]:
         assets_dir = pathlib.Path(__file__).parents[1] / 'assets'
-        # file_paths = [path.as_posix() for path in assets_dir.iterdir()]
         file_paths = [
-            assets_dir.joinpath(file).as_posix()
+            assets_dir.joinpath(file)
             for file in os.listdir(assets_dir.as_posix())
             if os.path.isfile(assets_dir.joinpath(file))
         ]
@@ -68,7 +67,7 @@ class Misspellings:
 
     def check(
         self, filename: str
-    ) -> tuple[list[Exception], list[[str, int, str]]]:
+    ) -> Tuple[List[Exception], List[List[Union[str, int, str]]]]:
         """Checks the files for misspellings.
 
         Returns:
@@ -98,7 +97,7 @@ class Misspellings:
                 errors.append(exception)
         return errors, results
 
-    def suggestions(self, word: str) -> list[str]:
+    def suggestions(self, word: str) -> List[str]:
         """Returns a list of suggestions for a misspelled word.
 
         Args:
@@ -125,7 +124,7 @@ class Misspellings:
 
     def output_normal(
         self,
-        filenames: list[str] | Iterable[str],
+        filenames: Union[List[str], Iterable[str]],
         output: StreamWriter,
     ) -> bool:
         """
@@ -152,7 +151,7 @@ class Misspellings:
         return found
 
     def export_result_to_file(
-        self, filenames: list[str] | Iterable[str], output: TextIO
+        self, filenames: Union[List[str], Iterable[str]], output: TextIO
     ) -> None:
         """
         Save the list of misspelled words and their corrections into a file.
@@ -176,7 +175,7 @@ class Misspellings:
         self,
         parser: TapType,
         args: TapType,
-        filenames: list[str] | Iterable[str],
+        filenames: Union[List[str], Iterable[str]],
     ) -> None:
         """
         Output a series of portable sed commands to change the file.

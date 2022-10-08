@@ -1,4 +1,5 @@
 import sys
+from typing import List
 
 from .words import get_a_line
 
@@ -10,7 +11,7 @@ class Suggestion:
         self.last_suggestions = {}
 
     def get_suggestion(
-        self, filename: str, lineno: int, word: str, suggestions: list[str]
+        self, filename: str, lineno: int, word: str, suggestions: List[str]
     ) -> str:
         """Show line from file, a misspelled word and request replacement."""
         if word not in self.last_suggestions:

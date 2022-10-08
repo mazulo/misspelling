@@ -1,5 +1,6 @@
 import re
 import string
+from typing import List
 
 _NORM_REGEX = re.compile(r'(?<=[a-z])(?=[A-Z])')
 _WORD_REGEX = re.compile(r'[\s_0-9\W]+', flags=re.UNICODE)
@@ -10,7 +11,7 @@ def normalize(word: str) -> str:
     return word.strip(string.punctuation)
 
 
-def split_words(line: str) -> list[str]:
+def split_words(line: str) -> List[str]:
     """Return the list of words contained in a line."""
     # Normalize any camel cased words first.
     line = ' '.join(w for w in _NORM_REGEX.split(line) if w)

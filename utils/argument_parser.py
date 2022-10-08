@@ -1,14 +1,14 @@
 from pathlib import Path
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 from tap import Tap
 
 from .version import get_version
 
 
-def to_path(files: list[Path] | list[str]) -> Union[list[str], list[str]]:
+def to_path(files: Union[List[Path], List[str]]) -> List[str]:
     if isinstance(files, list):
-        return [path.as_posix() for path in files]
+        return [path for path in files]
     else:
         return files
 
@@ -46,7 +46,7 @@ class MisspellingArgumentParser(Tap):
     ] = None   # Export the list of misspelled words into a file
     dump_misspelling: bool = False   # Dump the list of misspelled words
     version: Optional[str] = f'misspellings: {get_version()}'
-    files: Optional[list[Path] | list[str]] = None   # Files to check
+    files: Optional[Union[List[Path], List[str]]] = None   # Files to check
 
     def configure(self) -> None:
         self.add_argument(

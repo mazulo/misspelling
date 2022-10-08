@@ -2,7 +2,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Iterable, NoReturn, Union
+from typing import Iterable, List, NoReturn, Union
 
 EXCLUDED_RE = re.compile(r'\.(py[co]|s?o|a)$')
 EXCLUDED_DIRS_RE = re.compile(
@@ -10,7 +10,7 @@ EXCLUDED_DIRS_RE = re.compile(
 )
 
 
-def parse_file_list(filename: Path) -> Union[list[str], NoReturn]:
+def parse_file_list(filename: Path) -> Union[List[str], NoReturn]:
     """Show a line from a file in context."""
     f = sys.stdin
     try:
@@ -25,7 +25,7 @@ def parse_file_list(filename: Path) -> Union[list[str], NoReturn]:
         raise err
 
 
-def expand_directories(path_list: list[Path]) -> Iterable[str]:
+def expand_directories(path_list: List[Path]) -> Iterable[str]:
     """Return list with directories replaced their contained files."""
     for path in path_list:
         if os.path.isdir(path):
