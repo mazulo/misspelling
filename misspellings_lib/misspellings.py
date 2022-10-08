@@ -1,5 +1,4 @@
 import collections
-import io
 import json
 import os
 import pathlib
@@ -34,13 +33,13 @@ class Misspellings:
         self.suggestion = Suggestion()
         if misspelling_file:
             self._misspelling_dict = collections.defaultdict(list)
-            with io.open(misspelling_file, 'r') as f:
+            with open(misspelling_file, 'r') as f:
                 for line in f:
                     bad_word, correction = line.strip().split(' ', 1)
                     self._misspelling_dict[bad_word].append(correction)
         elif misspelling_json_file:
             self._misspelling_dict = collections.defaultdict(list)
-            with io.open(misspelling_json_file, 'r') as custom_json_file:
+            with open(misspelling_json_file, 'r') as custom_json_file:
                 custom_dict_with_misspelled_words = json.load(custom_json_file)
                 for (
                     bad_word,
@@ -51,7 +50,7 @@ class Misspellings:
             self._misspelling_dict = {}
             file_paths = self._get_default_json_files()
             for dictionary in file_paths:
-                with io.open(
+                with open(
                     os.path.join(os.path.dirname(__file__), dictionary)
                 ) as input_file:
                     self._misspelling_dict.update(json.load(input_file))
@@ -83,7 +82,7 @@ class Misspellings:
         results = []
         if not os.path.isdir(filename):
             try:
-                with io.open(filename, 'r') as f:
+                with open(filename, 'r') as f:
                     line_ct = 1
                     for line in f:
                         for word in split_words(line):
@@ -189,7 +188,7 @@ class Misspellings:
                 'The sed script file "%s" must not exist.' % args.script_output
             )
 
-        with io.open(args.script_output, 'w') as sed_script:
+        with open(args.script_output, 'w') as sed_script:
             for filename in filenames:
                 errors, results = self.check(filename)
                 for res in results:

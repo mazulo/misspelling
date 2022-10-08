@@ -1,4 +1,3 @@
-import io
 import os
 import re
 import sys
@@ -16,7 +15,7 @@ def parse_file_list(filename: Path) -> Union[list[str], NoReturn]:
     f = sys.stdin
     try:
         if filename.as_posix() != '-':
-            f = io.open(filename.as_posix(), 'r')
+            f = open(filename, 'r')
         file_list = [line.strip() for line in f]
         if f != sys.stdin:
             f.close()
