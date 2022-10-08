@@ -31,6 +31,7 @@ class Misspellings:
           ValueError: Raised if misspelling_file isn't correctly formatted.
 
         """
+        self.suggestion = Suggestion()
         if misspelling_file:
             self._misspelling_dict = collections.defaultdict(list)
             with io.open(misspelling_file, 'r') as f:
@@ -188,8 +189,6 @@ class Misspellings:
                 'The sed script file "%s" must not exist.' % args.script_output
             )
 
-        sg = Suggestion()
-
         with io.open(args.script_output, 'w') as sed_script:
             for filename in filenames:
                 errors, results = self.check(filename)
@@ -198,7 +197,7 @@ class Misspellings:
                     if len(suggestions) == 1:
                         suggestion = suggestions[0]
                     else:
-                        suggestion = sg.get_suggestion(
+                        suggestion = self.suggestion.get_suggestion(
                             res[0], res[1], res[2], suggestions
                         )
                     if suggestion != res[2]:
