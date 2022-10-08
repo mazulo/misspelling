@@ -19,7 +19,7 @@ import codecs
 import sys
 from typing import Optional
 
-from misspellings_lib import MisspellingDetector
+from misspellings_lib import MisspellingFactory
 from utils import (MisspellingArgumentParser, expand_directories,
                    parse_file_list)
 
@@ -40,21 +40,27 @@ def main() -> Optional[int]:
     )
 
     if args.misspelling_file:
-        misspelling = MisspellingDetector(misspelling_file=args.misspelling_file)
+        misspelling = MisspellingFactory.factory(
+            misspelling_detector_name='misspelling_file_detector',
+            misspelling_file=args.misspelling_file,
+        )
         args.files = expand_directories(args.files)
 
         if args.export_file:
             with open(args.export_file, 'w', encoding='utf-8') as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     elif args.json_file:
-        misspelling = MisspellingDetector(misspelling_json_file=args.json_file)
+        misspelling = MisspellingFactory.factory(
+            misspelling_detector_name='misspelling_json_detector',
+            misspelling_file=args.json_file,
+        )
         args.files = expand_directories(args.files)
 
         if args.export_file:
             with open(args.export_file, 'w', encoding='utf-8') as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     else:
-        misspelling = MisspellingDetector()
+        misspelling = MisspellingFactory.factory(misspelling_detector_name='misspelling_detector')
         args.files = expand_directories(args.files)
 
         if args.export_file:

@@ -3,20 +3,30 @@ from pathlib import Path
 
 import pytest
 
-from misspellings_lib import MisspellingDetector
+from misspellings_lib.misspelling_detector import MisspellingDetector
+from misspellings_lib.misspelling_file_detector import MisspellingFileDetector
+from misspellings_lib.misspelling_json_detector import MisspellingJSONDetector
 from utils import normalize, same_case, split_words
 
 BASE_PATH = Path(__file__).parents[0]
 
 
-class TestMisspellings:
+class TestMisspellingDetector:
     def test_missing_ms_list(self):
         with pytest.raises(IOError):
-            MisspellingDetector(os.path.join(BASE_PATH, 'missing_msl.txt'))
+            MisspellingFileDetector(os.path.join(BASE_PATH, 'missing_msl.txt'))
 
     def test_broken_ms_list(self):
         with pytest.raises(ValueError):
-            MisspellingDetector(os.path.join(BASE_PATH, 'assets/broken_msl.txt'))
+            MisspellingFileDetector(os.path.join(BASE_PATH, 'assets/broken_msl.txt'))
+
+    def test_missing_ms_list_for_json_detector(self):
+        with pytest.raises(IOError):
+            MisspellingJSONDetector(os.path.join(BASE_PATH, 'missing_msl.json'))
+
+    def test_broken_ms_list_for_json_detector(self):
+        with pytest.raises(ValueError):
+            MisspellingJSONDetector(os.path.join(BASE_PATH, 'assets/broken_msl.json'))
 
     def test_missing_file(self):
         ms = MisspellingDetector()
