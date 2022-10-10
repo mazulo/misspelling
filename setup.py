@@ -9,7 +9,7 @@ import sys
 import unittest
 from pathlib import Path
 
-from setuptools import Command, setup
+from setuptools import Command, find_packages, setup
 
 from src.utils import get_version
 
@@ -37,7 +37,7 @@ class TestCommand(Command):
 
 setup(
     cmdclass={"test": TestCommand},
-    name="src",
+    name="misspellings_lib",
     version=get_version(),
     url="https://github.com/mazulo/misspellings",
     download_url=f"https://github.com/mazulo/misspellings/tarball/{get_version()}",
@@ -46,7 +46,8 @@ setup(
     description="A tool to detect misspellings with opinionated additions",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=["src"],
+    packages=find_packages("src"),
+    package_dir={"": "src"},
     package_data={"src": ["assets/custom.json", "assets/wikipedia.json"]},
     scripts=[
         "misspellings",
