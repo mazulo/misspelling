@@ -14,3 +14,4 @@ misspellings_lib.egg-info/
 .pypirc
 .python-version
 .pytest_cache
+src.egg-info

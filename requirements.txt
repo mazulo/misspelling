@@ -12,3 +12,6 @@ build==0.8.0
 typed-argument-parser==1.7.2
 isort==5.10.1
 pre-commit==2.20.0
+twine==4.0.1
+setuptools==65.4.1
+wheel==0.37.1

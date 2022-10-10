@@ -7,10 +7,14 @@ This installs the misspelling command and the misspellings check module.
 
 import sys
 import unittest
+from pathlib import Path
 
 from setuptools import Command, setup
 
 from src.utils import get_version
+
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 
 
 class TestCommand(Command):
@@ -41,14 +45,15 @@ with open("README.md", encoding="utf-8") as readme:
         author="Patrick Mazulo",
         author_email="pmazulo@gmail.com",
         description="A tool to detect misspellings with opinionated additions",
-        long_description=readme.read(),
+        long_description=long_description,
+        long_description_content_type="text/markdown",
         packages=["src"],
         package_data={"src": ["assets/custom.json", "assets/wikipedia.json"]},
         scripts=[
             "misspellings",
         ],
         keywords="check, code, spelling, spellcheck",
-        license="GNU General Public License v3",
+        license="MIT License",
         platforms=["POSIX"],
         classifiers=[
             "Development Status :: 5 - Production/Stable",
