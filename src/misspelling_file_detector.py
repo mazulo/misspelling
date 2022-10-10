@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import collections
 import pathlib
+from typing import Union
 
 from .misspelling_checker import MisspellingChecker
 
@@ -13,7 +14,7 @@ class MisspellingFileDetector(MisspellingChecker):
 
     def __init__(
         self,
-        misspelling_file: pathlib.Path | str,
+        misspelling_file: Union[pathlib.Path, str],
     ) -> None:
         """
         Initialises a MisspellingFileDetector instance.

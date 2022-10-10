@@ -1,8 +1,7 @@
-from __future__ import annotations
-
 import json
 import os
 import pathlib
+from typing import List
 
 from .misspelling_checker import MisspellingChecker
 
@@ -23,7 +22,7 @@ class MisspellingDetector(MisspellingChecker):
                 self._misspelling_dict.update(json.load(input_file))
 
     @staticmethod
-    def _get_default_json_files() -> list[pathlib.Path]:
+    def _get_default_json_files() -> List[pathlib.Path]:
         assets_dir = pathlib.Path(__file__).parents[1] / "assets"
         file_paths = [
             assets_dir.joinpath(file)

@@ -1,10 +1,8 @@
-from __future__ import annotations
-
 import os
 import pathlib
 import sys
 from codecs import StreamWriter
-from typing import TextIO
+from typing import List, TextIO, Tuple, Union
 
 from tap.tap import TapType
 
@@ -14,7 +12,7 @@ from .misspelling_interface import IMisspellingChecker
 
 
 class MisspellingChecker(IMisspellingChecker):
-    def check(self, filename: pathlib.Path) -> tuple[list[Exception], list[list["str | int | str"]]]:
+    def check(self, filename: pathlib.Path) -> Tuple[List[Exception], List[List[Union[str, int, str]]]]:
         """
         Checks the files for misspellings.
         Returns:
@@ -40,7 +38,7 @@ class MisspellingChecker(IMisspellingChecker):
                 errors.append(exception)
         return errors, results
 
-    def get_suggestions(self, word: str) -> list[str]:
+    def get_suggestions(self, word: str) -> List[str]:
         """
         Returns a list of suggestions for a misspelled word.
         Args:
@@ -55,7 +53,7 @@ class MisspellingChecker(IMisspellingChecker):
         )
         return sorted(same_case(source=word, destination=w) for w in suggestions)
 
-    def dump_corrections(self) -> list[list[str]]:
+    def dump_corrections(self) -> List[List[str]]:
         """Returns a list of misspelled words and corrections."""
         results = []
         for bad_word in sorted(self._misspelling_dict.keys()):
@@ -63,7 +61,7 @@ class MisspellingChecker(IMisspellingChecker):
                 results.append([bad_word, correction])
         return results
 
-    def print_result(self, filenames: list[pathlib.Path], output: StreamWriter) -> bool:
+    def print_result(self, filenames: List[pathlib.Path], output: StreamWriter) -> bool:
         """
         Print a list of misspelled words and their corrections.
 
@@ -85,7 +83,7 @@ class MisspellingChecker(IMisspellingChecker):
 
         return found
 
-    def export_result_to_file(self, filenames: list[pathlib.Path], output: TextIO) -> None:
+    def export_result_to_file(self, filenames: List[pathlib.Path], output: TextIO) -> None:
         """
         Save the list of misspelled words and their corrections into a file.
         """
@@ -102,7 +100,7 @@ class MisspellingChecker(IMisspellingChecker):
                     )
                 )
 
-    def output_sed_commands(self, parser: TapType, args: TapType, filenames: list[pathlib.Path]) -> None:
+    def output_sed_commands(self, parser: TapType, args: TapType, filenames: List[pathlib.Path]) -> None:
         """
         Output a series of portable sed commands to change the file.
         """

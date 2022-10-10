@@ -4,6 +4,7 @@ import os
 import re
 import sys
 from pathlib import Path
+from typing import List, NoReturn, Union
 
 EXCLUDED_RE = re.compile(r"\.(py[co]|s?o|a|sh|txt|pylintrc|coverage|gitignore|python-version)|LICENSE$")
 EXCLUDED_DIRS_RE = re.compile(
@@ -12,7 +13,7 @@ EXCLUDED_DIRS_RE = re.compile(
 )
 
 
-def parse_file_list(filename: Path) -> "list[Path] | NoReturn":
+def parse_file_list(filename: Path) -> Union[List[Path], NoReturn]:
     """Show a line from a file in context."""
     f = sys.stdin
     try:
@@ -27,7 +28,7 @@ def parse_file_list(filename: Path) -> "list[Path] | NoReturn":
         raise err
 
 
-def expand_directories(path_list: list[Path]) -> list[Path]:
+def expand_directories(path_list: List[Path]) -> List[Path]:
     """Return list with directories replaced their contained files."""
     for path in path_list:
         if os.path.isdir(path):

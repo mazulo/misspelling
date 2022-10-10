@@ -1,6 +1,5 @@
-from __future__ import annotations
-
 import sys
+from typing import List
 
 from .words import get_a_line
 
@@ -11,7 +10,7 @@ class SuggestionGenerator:
     def __init__(self):
         self.last_suggestions = {}
 
-    def get_suggestion(self, filename: str, lineno: int, word: str, suggestions: list[str]) -> str:
+    def get_suggestion(self, filename: str, lineno: int, word: str, suggestions: List[str]) -> str:
         """Show line from file, a misspelled word and request replacement."""
         if word not in self.last_suggestions:
             self.last_suggestions[word] = suggestions[0]

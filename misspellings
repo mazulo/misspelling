@@ -15,16 +15,15 @@ This tool uses the English wordlist from Wikipedia in order to scan
 source code and identify misspelled words.
 """
 
-from __future__ import annotations
-
 import codecs
 import sys
+from typing import Optional
 
 from src import MisspellingFactory
 from src.utils import MisspellingArgumentParser, expand_directories, parse_file_list
 
 
-def main() -> "int | None":
+def main() -> Optional[int]:
     """Internal main entry point."""
     parser = MisspellingArgumentParser()
     args = parser.parse_args()

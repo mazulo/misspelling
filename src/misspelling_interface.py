@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import abc
-import collections
+import pathlib
 from codecs import StreamWriter
-from collections import abc as colllection_abc
-from typing import TextIO
+from typing import DefaultDict, Dict, List, TextIO, Tuple, Union
 
 from tap.tap import TapType
 
@@ -12,31 +11,31 @@ from src.utils import SuggestionGenerator
 
 
 class IMisspellingChecker(metaclass=abc.ABCMeta):
-    _misspelling_dict: collections.defaultdict | dict
+    _misspelling_dict: Union[DefaultDict, Dict]
     suggestion_generator = SuggestionGenerator()
 
     @abc.abstractmethod
-    def check(self, filename: str) -> tuple[list[Exception], list[list[str | int | str]]]:
+    def check(self, filename: str) -> Tuple[List[Exception], List[List[Union[str, int, str]]]]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_suggestions(self, word: str) -> list[str]:
+    def get_suggestions(self, word: str) -> List[str]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def dump_corrections(self) -> list[list[str]]:
+    def dump_corrections(self) -> List[List[str]]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def print_result(
         self,
-        filenames: list[str] | colllection_abc.Iterable[str],
+        filenames: List[pathlib.Path],
         output: StreamWriter,
     ) -> bool:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def export_result_to_file(self, filenames: list[str] | colllection_abc.Iterable[str], output: TextIO) -> None:
+    def export_result_to_file(self, filenames: List[pathlib.Path], output: TextIO) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -44,6 +43,6 @@ class IMisspellingChecker(metaclass=abc.ABCMeta):
         self,
         parser: TapType,
         args: TapType,
-        filenames: list[str] | colllection_abc.Iterable[str],
+        filenames: List[pathlib.Path],
     ) -> None:
         raise NotImplementedError
