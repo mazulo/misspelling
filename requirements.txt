@@ -12,3 +12,4 @@ build==0.8.0
 typed-argument-parser==1.7.2
 isort==5.10.1
 pylint==2.15.3
+pre-commit==2.20.0

@@ -7,7 +7,7 @@ from typing import TextIO
 
 from tap.tap import TapType
 
-from utils import SuggestionGenerator
+from src.utils import SuggestionGenerator
 
 
 class IMisspellingChecker(metaclass=abc.ABCMeta):

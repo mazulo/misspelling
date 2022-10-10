@@ -20,8 +20,8 @@ from __future__ import annotations
 import codecs
 import sys
 
-from misspellings_lib import MisspellingFactory
-from utils import MisspellingArgumentParser, expand_directories, parse_file_list
+from src import MisspellingFactory
+from src.utils import MisspellingArgumentParser, expand_directories, parse_file_list
 
 
 def main() -> int:

@@ -10,7 +10,7 @@ import unittest
 
 from setuptools import Command, setup
 
-from utils import get_version
+from src.utils import get_version
 
 
 class TestCommand(Command):
@@ -34,7 +34,7 @@ class TestCommand(Command):
 with open("README.md", encoding="utf-8") as readme:
     setup(
         cmdclass={"test": TestCommand},
-        name="misspellings_lib",
+        name="src",
         version=get_version(),
         url="https://github.com/mazulo/misspellings",
         download_url=f"https://github.com/mazulo/misspellings/tarball/{get_version()}",
@@ -42,8 +42,8 @@ with open("README.md", encoding="utf-8") as readme:
         author_email="pmazulo@gmail.com",
         description="A tool to detect misspellings with opinionated additions",
         long_description=readme.read(),
-        packages=["misspellings_lib"],
-        package_data={"misspellings_lib": ["assets/custom.json", "assets/wikipedia.json"]},
+        packages=["src"],
+        package_data={"src": ["assets/custom.json", "assets/wikipedia.json"]},
         scripts=[
             "misspellings",
         ],

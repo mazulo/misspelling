@@ -3,10 +3,10 @@ from pathlib import Path
 
 import pytest
 
-from misspellings_lib.misspelling_detector import MisspellingDetector
-from misspellings_lib.misspelling_file_detector import MisspellingFileDetector
-from misspellings_lib.misspelling_json_detector import MisspellingJSONDetector
-from utils import normalize, same_case, split_words
+from src.misspelling_detector import MisspellingDetector
+from src.misspelling_file_detector import MisspellingFileDetector
+from src.misspelling_json_detector import MisspellingJSONDetector
+from src.utils import normalize, same_case, split_words
 
 BASE_PATH = Path(__file__).parents[0]
 

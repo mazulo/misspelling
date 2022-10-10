@@ -8,7 +8,7 @@ from typing import TextIO
 
 from tap.tap import TapType
 
-from utils import esc_file, esc_sed, same_case, split_words
+from src.utils import esc_file, esc_sed, same_case, split_words
 
 from .misspelling_interface import IMisspellingChecker
 
