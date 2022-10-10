@@ -38,7 +38,7 @@ class MisspellingArgumentParser(Tap):
     export_file: Path | None = None  # Export the list of misspelled words into a file
     dump_misspelling: bool = False  # Dump the list of misspelled words
     version: str = f"misspellings: {get_version()}"
-    files: list[Path] | list[str] = None  # Files to check
+    files: list[Path] | list[str] | None = None  # Files to check
 
     def configure(self) -> None:
         self.add_argument(
