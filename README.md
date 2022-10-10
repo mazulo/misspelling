@@ -3,7 +3,7 @@
 
 ## Spell checker for code
 
-> This is a project originally forked from https://github.com/erichurkman/misspellings
+> This is a project originally imported/forked from the abandoned project https://github.com/lyda/misspell-check
 
 This is a Python library and tool to check for misspelled words in
 source code. It does this by looking for words from a list of
