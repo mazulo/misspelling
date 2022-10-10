@@ -29,16 +29,16 @@ class MisspellingArgumentParser(Tap):
     def __init__(self):
         super().__init__(underscores_to_dashes=True)
 
-    file_list: "Path | None" = None  # File containing list of files to check
-    misspelling_file: "Path | None" = None  # File containing list of misspelled words and corrections
-    json_file: "Path | None" = None  # Json file containing misspelled words and corrections
-    script_output: "Path | None" = (
+    file_list: Path | None = None  # File containing list of files to check
+    misspelling_file: Path | None = None  # File containing list of misspelled words and corrections
+    json_file: Path | None = None  # Json file containing misspelled words and corrections
+    script_output: Path | None = (
         None  # Create a shell script to interactively correct the files - script saved to the given file
     )
-    export_file: "Path | None" = None  # Export the list of misspelled words into a file
+    export_file: Path | None = None  # Export the list of misspelled words into a file
     dump_misspelling: bool = False  # Dump the list of misspelled words
     version: str = f"misspellings: {get_version()}"
-    files: "list[Path] | list[str] | None" = None  # Files to check
+    files: list[Path] | list[str] = None  # Files to check
 
     def configure(self) -> None:
         self.add_argument(
