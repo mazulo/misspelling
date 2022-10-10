@@ -24,7 +24,7 @@ from src import MisspellingFactory
 from src.utils import MisspellingArgumentParser, expand_directories, parse_file_list
 
 
-def main() -> int:
+def main() -> "int | None":
     """Internal main entry point."""
     parser = MisspellingArgumentParser()
     args = parser.parse_args()
@@ -71,11 +71,9 @@ def main() -> int:
 
     if args.script_output:
         misspelling.output_sed_commands(parser, args, filenames=args.files)
-        output_code = 0
-    else:
-        output_code = 2 if misspelling.print_result(filenames=args.files, output=output) else 0
+        return 0
 
-    return output_code
+    return 2 if misspelling.print_result(filenames=args.files, output=output) else 0
 
 
 if __name__ == "__main__":

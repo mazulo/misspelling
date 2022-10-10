@@ -3,6 +3,7 @@ from __future__ import annotations
 import abc
 import collections
 from codecs import StreamWriter
+from collections import abc as colllection_abc
 from typing import TextIO
 
 from tap.tap import TapType
@@ -29,13 +30,13 @@ class IMisspellingChecker(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def print_result(
         self,
-        filenames: list[str] | collections.Iterable[str],
+        filenames: list[str] | colllection_abc.Iterable[str],
         output: StreamWriter,
     ) -> bool:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def export_result_to_file(self, filenames: list[str] | collections.Iterable[str], output: TextIO) -> None:
+    def export_result_to_file(self, filenames: list[str] | colllection_abc.Iterable[str], output: TextIO) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -43,6 +44,6 @@ class IMisspellingChecker(metaclass=abc.ABCMeta):
         self,
         parser: TapType,
         args: TapType,
-        filenames: list[str] | collections.Iterable[str],
+        filenames: list[str] | colllection_abc.Iterable[str],
     ) -> None:
         raise NotImplementedError

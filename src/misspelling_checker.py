@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import collections
 import os
+import pathlib
 import sys
 from codecs import StreamWriter
 from typing import TextIO
@@ -14,7 +14,7 @@ from .misspelling_interface import IMisspellingChecker
 
 
 class MisspellingChecker(IMisspellingChecker):
-    def check(self, filename: str) -> tuple[list[Exception], list[list[str | int | str]]]:
+    def check(self, filename: pathlib.Path) -> tuple[list[Exception], list[list["str | int | str"]]]:
         """
         Checks the files for misspellings.
         Returns:
@@ -63,7 +63,7 @@ class MisspellingChecker(IMisspellingChecker):
                 results.append([bad_word, correction])
         return results
 
-    def print_result(self, filenames: list[str] | collections.Iterable[str], output: StreamWriter) -> bool:
+    def print_result(self, filenames: list[pathlib.Path], output: StreamWriter) -> bool:
         """
         Print a list of misspelled words and their corrections.
 
@@ -85,7 +85,7 @@ class MisspellingChecker(IMisspellingChecker):
 
         return found
 
-    def export_result_to_file(self, filenames: list[str] | collections.Iterable[str], output: TextIO) -> None:
+    def export_result_to_file(self, filenames: list[pathlib.Path], output: TextIO) -> None:
         """
         Save the list of misspelled words and their corrections into a file.
         """
@@ -102,9 +102,7 @@ class MisspellingChecker(IMisspellingChecker):
                     )
                 )
 
-    def output_sed_commands(
-        self, parser: TapType, args: TapType, filenames: list[str] | collections.Iterable[str]
-    ) -> None:
+    def output_sed_commands(self, parser: TapType, args: TapType, filenames: list[pathlib.Path]) -> None:
         """
         Output a series of portable sed commands to change the file.
         """
