@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import collections
 import json
 import pathlib
-from typing import Union
 
 from .misspelling_checker import MisspellingChecker
+
 
 class MisspellingJSONDetector(MisspellingChecker):
     """
@@ -12,7 +14,7 @@ class MisspellingJSONDetector(MisspellingChecker):
 
     def __init__(
         self,
-        misspelling_json_file: Union[pathlib.Path, str],
+        misspelling_json_file: pathlib.Path | str,
     ) -> None:
         """
         Initialises a MisspellingJSONDetector instance.
@@ -26,7 +28,7 @@ class MisspellingJSONDetector(MisspellingChecker):
 
         """
         self._misspelling_dict = collections.defaultdict(list)
-        with open(misspelling_json_file, 'r') as custom_json_file:
+        with open(misspelling_json_file, "r", encoding="utf-8") as custom_json_file:
             custom_dict_with_misspelled_words = json.load(custom_json_file)
             for (
                 bad_word,

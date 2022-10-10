@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import abc
+import collections
 from codecs import StreamWriter
-from typing import DefaultDict, Tuple, List, Union, Iterable, TextIO, Dict
+from typing import TextIO
 
 from tap.tap import TapType
 
@@ -8,46 +11,38 @@ from utils import SuggestionGenerator
 
 
 class IMisspellingChecker(metaclass=abc.ABCMeta):
-    _misspelling_dict: Union[DefaultDict, Dict]
+    _misspelling_dict: collections.defaultdict | dict
     suggestion_generator = SuggestionGenerator()
 
     @abc.abstractmethod
-    def check(
-            self, filename: str
-    ) -> Tuple[List[Exception], List[List[Union[str, int, str]]]]:
-        raise NotImplemented
+    def check(self, filename: str) -> tuple[list[Exception], list[list[str | int | str]]]:
+        raise NotImplementedError
 
     @abc.abstractmethod
-    def get_suggestions(self, word: str) -> List[str]:
-        raise NotImplemented
-
+    def get_suggestions(self, word: str) -> list[str]:
+        raise NotImplementedError
 
     @abc.abstractmethod
-    def dump_corrections(self) -> List[List[str]]:
-        raise NotImplemented
-
+    def dump_corrections(self) -> list[list[str]]:
+        raise NotImplementedError
 
     @abc.abstractmethod
     def print_result(
-            self,
-            filenames: Union[List[str], Iterable[str]],
-            output: StreamWriter,
+        self,
+        filenames: list[str] | collections.Iterable[str],
+        output: StreamWriter,
     ) -> bool:
-        raise NotImplemented
-
+        raise NotImplementedError
 
     @abc.abstractmethod
-    def export_result_to_file(
-            self, filenames: Union[List[str], Iterable[str]], output: TextIO
-    ) -> None:
-        raise NotImplemented
-
+    def export_result_to_file(self, filenames: list[str] | collections.Iterable[str], output: TextIO) -> None:
+        raise NotImplementedError
 
     @abc.abstractmethod
     def output_sed_commands(
-            self,
-            parser: TapType,
-            args: TapType,
-            filenames: Union[List[str], Iterable[str]],
+        self,
+        parser: TapType,
+        args: TapType,
+        filenames: list[str] | collections.Iterable[str],
     ) -> None:
-        raise NotImplemented
+        raise NotImplementedError

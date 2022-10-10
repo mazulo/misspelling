@@ -1,10 +1,11 @@
-import collections
+from __future__ import annotations
+
 import json
 import os
 import pathlib
-from typing import List
 
 from .misspelling_checker import MisspellingChecker
+
 
 class MisspellingDetector(MisspellingChecker):
     """
@@ -18,14 +19,12 @@ class MisspellingDetector(MisspellingChecker):
         self._misspelling_dict = {}
         file_paths = self._get_default_json_files()
         for dictionary in file_paths:
-            with open(
-                os.path.join(os.path.dirname(__file__), dictionary)
-            ) as input_file:
+            with open(os.path.join(os.path.dirname(__file__), dictionary), encoding="utf-8") as input_file:
                 self._misspelling_dict.update(json.load(input_file))
 
     @staticmethod
-    def _get_default_json_files() -> List[pathlib.Path]:
-        assets_dir = pathlib.Path(__file__).parents[1] / 'assets'
+    def _get_default_json_files() -> list[pathlib.Path]:
+        assets_dir = pathlib.Path(__file__).parents[1] / "assets"
         file_paths = [
             assets_dir.joinpath(file)
             for file in os.listdir(assets_dir.as_posix())

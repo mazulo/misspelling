@@ -15,16 +15,16 @@ This tool uses the English wordlist from Wikipedia in order to scan
 source code and identify misspelled words.
 """
 
+from __future__ import annotations
+
 import codecs
 import sys
-from typing import Optional
 
 from misspellings_lib import MisspellingFactory
-from utils import (MisspellingArgumentParser, expand_directories,
-                   parse_file_list)
+from utils import MisspellingArgumentParser, expand_directories, parse_file_list
 
 
-def main() -> Optional[int]:
+def main() -> int:
     """Internal main entry point."""
     parser = MisspellingArgumentParser()
     args = parser.parse_args()
@@ -35,48 +35,48 @@ def main() -> Optional[int]:
         except IOError as exception:
             parser.error(exception)
 
-    output = codecs.getwriter('utf-8')(
-        sys.stdout.buffer if hasattr(sys.stdout, 'buffer') else sys.stdout
-    )
+    output = codecs.getwriter("utf-8")(sys.stdout.buffer if hasattr(sys.stdout, "buffer") else sys.stdout)
 
     if args.misspelling_file:
         misspelling = MisspellingFactory.factory(
-            misspelling_detector_name='misspelling_file_detector',
+            misspelling_detector_name="misspelling_file_detector",
             misspelling_file=args.misspelling_file,
         )
         args.files = expand_directories(args.files)
 
         if args.export_file:
-            with open(args.export_file, 'w', encoding='utf-8') as correction_file:
+            with open(args.export_file, "w", encoding="utf-8") as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     elif args.json_file:
         misspelling = MisspellingFactory.factory(
-            misspelling_detector_name='misspelling_json_detector',
+            misspelling_detector_name="misspelling_json_detector",
             misspelling_file=args.json_file,
         )
         args.files = expand_directories(args.files)
 
         if args.export_file:
-            with open(args.export_file, 'w', encoding='utf-8') as correction_file:
+            with open(args.export_file, "w", encoding="utf-8") as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     else:
-        misspelling = MisspellingFactory.factory(misspelling_detector_name='misspelling_detector')
+        misspelling = MisspellingFactory.factory(misspelling_detector_name="misspelling_detector")
         args.files = expand_directories(args.files)
 
         if args.export_file:
-            with open(args.export_file, 'w', encoding='utf-8') as correction_file:
+            with open(args.export_file, "w", encoding="utf-8") as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
 
     if args.dump_misspelling:
         for word, correction in misspelling.dump_corrections():
-            output.write('%s %s\n' % (word, correction))
+            output.write("%s %s\n" % (word, correction))
 
     if args.script_output:
         misspelling.output_sed_commands(parser, args, filenames=args.files)
+        output_code = 0
     else:
-        return (
-            2 if misspelling.print_result(filenames=args.files, output=output) else 0
-        )
+        output_code = 2 if misspelling.print_result(filenames=args.files, output=output) else 0
 
-if __name__ == '__main__':
+    return output_code
+
+
+if __name__ == "__main__":
     sys.exit(main())
