@@ -47,8 +47,8 @@ class MisspellingChecker(IMisspellingChecker):
           List of zero or more suggested replacements for word.
 
         """
-        suggestions = set(self._misspelling_dict.get(word, set())).union(
-            set(self._misspelling_dict.get(word.lower(), set()))
+        suggestions = set(self._misspelling_dict.get(word, [])).union(
+            set(self._misspelling_dict.get(word.lower(), []))
         )
         return sorted(same_case(source=word, destination=w) for w in suggestions)
 
