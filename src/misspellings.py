@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """
 Checks files against a list of commonly misspelled words.
 
@@ -20,7 +19,7 @@ import sys
 from typing import Optional
 
 from src import MisspellingFactory
-from src.utils import MisspellingArgumentParser, expand_directories, parse_file_list
+from src.misspelling_lib.utils import MisspellingArgumentParser, expand_directories, parse_file_list
 
 
 def main() -> Optional[int]:

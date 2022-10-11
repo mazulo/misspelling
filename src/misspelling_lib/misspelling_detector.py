@@ -23,7 +23,7 @@ class MisspellingDetector(MisspellingChecker):
 
     @staticmethod
     def _get_default_json_files() -> List[pathlib.Path]:
-        assets_dir = pathlib.Path(__file__).parents[1] / "assets"
+        assets_dir = pathlib.Path(__file__).parents[0] / "assets"
         file_paths = [
             assets_dir.joinpath(file)
             for file in os.listdir(assets_dir.as_posix())

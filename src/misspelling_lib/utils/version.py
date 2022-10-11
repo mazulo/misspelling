@@ -1,2 +1,2 @@
 def get_version() -> str:
-    return "2.0.1"
+    return "2.0.2"

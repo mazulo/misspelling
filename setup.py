@@ -2,7 +2,7 @@
 
 """
 Installer for misspelling-check.
-This installs the misspelling command and the misspellings check module.
+This installs the misspellings command.
 """
 
 import sys
@@ -11,7 +11,7 @@ from pathlib import Path
 
 from setuptools import Command, find_packages, setup
 
-from src.utils import get_version
+from src.misspelling_lib.utils import get_version
 
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
@@ -46,12 +46,10 @@ setup(
     description="A tool to detect misspellings with opinionated additions",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=find_packages("src"),
+    packages=find_packages(where="src"),
     package_dir={"": "src"},
-    package_data={"src": ["assets/custom.json", "assets/wikipedia.json"]},
-    scripts=[
-        "misspellings",
-    ],
+    package_data={"misspellings_lib": ["assets/custom.json", "assets/wikipedia.json"]},
+    entry_points={"console_scripts": ["misspellings = src.misspellings:main"]},
     keywords="check, code, spelling, spellcheck",
     license="MIT License",
     platforms=["POSIX"],

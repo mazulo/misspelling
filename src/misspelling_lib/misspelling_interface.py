@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import abc
 import pathlib
 from codecs import StreamWriter
@@ -7,7 +5,7 @@ from typing import DefaultDict, Dict, List, TextIO, Tuple, Union
 
 from tap.tap import TapType
 
-from src.utils import SuggestionGenerator
+from src.misspelling_lib.utils import SuggestionGenerator
 
 
 class IMisspellingChecker(metaclass=abc.ABCMeta):

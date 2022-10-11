@@ -1,7 +1,5 @@
-from __future__ import annotations
-
 from pathlib import Path
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from .misspelling_detector import MisspellingDetector
 from .misspelling_file_detector import MisspellingFileDetector
@@ -12,7 +10,9 @@ MisspellingDetectorType = Union[MisspellingDetector, MisspellingFileDetector, Mi
 
 class MisspellingFactory:
     @classmethod
-    def factory(cls, misspelling_detector_name: str, misspelling_file: Path | None = None) -> MisspellingDetectorType:
+    def factory(
+        cls, misspelling_detector_name: str, misspelling_file: Optional[Union[Path, None]] = None
+    ) -> MisspellingDetectorType:
         class_map = cls.get_misspelling_class_map()
         if misspelling_detector_name == "misspelling_detector":
             return class_map.get(misspelling_detector_name)()
