@@ -22,12 +22,12 @@ from typing import Optional
 from rich.console import Console
 
 file = Path(__file__).resolve()
-package_root_directory = file.parents[2]
+package_root_directory = file.parent
 sys.path.append(str(package_root_directory))
 
 
-from src.misspelling_lib import MisspellingFactory
-from src.misspelling_lib.utils import MisspellingArgumentParser, expand_directories, get_version, parse_file_list
+from misspelling_lib import MisspellingFactory
+from misspelling_lib.utils import MisspellingArgumentParser, expand_directories, get_version, parse_file_list
 
 
 def main() -> Optional[int]:
@@ -45,7 +45,7 @@ def main() -> Optional[int]:
 
     if args.version:
         console = Console()
-        console.print(f"[green]misspellings version[/green]: [bold green]{get_version()}\n")
+        console.print(f"[green]misspellings version[/green]: [bold green]{get_version()}")
         return 0
 
     if args.misspelling_file:
