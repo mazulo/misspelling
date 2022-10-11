@@ -1,12 +1,11 @@
 #!/bin/bash -eu
 
 repository_root=$(dirname "${BASH_SOURCE[0]}")
-json_filename="$repository_root/../misspellings_lib/wikipedia.json"
+json_filename="../src/misspelling_lib/assets/wikipedia.json"
 
 url='https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines'
 
 {
-  # Ignore weird duplicate lines and put them in "custom.json" instead.
   curl "$url" 2>| /dev/null \
       | sed -n '/<pre>/,/<\/pre>/p' \
       | sed 's/   */ /g' \
