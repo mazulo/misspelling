@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 from .misspelling_detector import MisspellingDetector
 from .misspelling_file_detector import MisspellingFileDetector
@@ -19,7 +19,7 @@ class MisspellingFactory:
         return class_map.get(misspelling_detector_name)(misspelling_file)
 
     @staticmethod
-    def get_misspelling_class_map() -> dict[str, Any]:
+    def get_misspelling_class_map() -> Dict[str, Any]:
         return {
             "misspelling_detector": MisspellingDetector,
             "misspelling_file_detector": MisspellingFileDetector,
