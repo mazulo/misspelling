@@ -3,10 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from src.misspelling_detector import MisspellingDetector
-from src.misspelling_file_detector import MisspellingFileDetector
-from src.misspelling_json_detector import MisspellingJSONDetector
-from src.utils import normalize, same_case, split_words
+from src.misspelling_lib import MisspellingDetector, MisspellingFileDetector, MisspellingJSONDetector
+from src.misspelling_lib.utils import normalize, same_case, split_words
 
 BASE_PATH = Path(__file__).parents[0]
 
@@ -30,18 +28,18 @@ class TestMisspellingDetector:
 
     def test_missing_file(self):
         ms = MisspellingDetector()
-        errors, _ = ms.check(os.path.join(BASE_PATH, "missing_source.c"))
+        errors, _ = ms.check(BASE_PATH / "assets/missing_source.c")
         assert errors
 
     def test_good_file(self):
         ms = MisspellingDetector()
-        errors, results = ms.check(os.path.join(BASE_PATH, "assets/nine_misspellings.json"))
+        errors, results = ms.check(BASE_PATH / "assets/nine_misspellings.json")
         assert len(errors) == 0
         assert len(results) == 9
 
     def test_more_complex_file(self):
         ms = MisspellingDetector()
-        errors, results = ms.check(os.path.join(BASE_PATH, "assets/various_spellings.c"))
+        errors, results = ms.check(BASE_PATH / "assets/various_spellings.c")
         assert len(errors) == 0
         assert len(results) == 7
 

@@ -1,13 +1,12 @@
 [tool.poetry]
 name = "misspelling"
-version = "2.0.0"
+version = "2.0.2"
 description = "This is a Python library and tool to check for misspelled words in source code."
 authors = ["Patrick Mazulo <pmazulo@gmail.com>"]
 license = "GNU GENERAL PUBLIC LICENSE"
 packages = [
     { include = "src" },
     { include = "src/**/*.py" },
-    { include = "misspellings" },
 ]
 
 [tool.poetry.dependencies]

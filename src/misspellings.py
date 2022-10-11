@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """
 Checks files against a list of commonly misspelled words.
 
@@ -19,8 +18,10 @@ import codecs
 import sys
 from typing import Optional
 
+from rich.console import Console
+
 from src import MisspellingFactory
-from src.utils import MisspellingArgumentParser, expand_directories, parse_file_list
+from src.misspelling_lib.utils import MisspellingArgumentParser, expand_directories, get_version, parse_file_list
 
 
 def main() -> Optional[int]:
@@ -35,6 +36,11 @@ def main() -> Optional[int]:
             parser.error(exception)
 
     output = codecs.getwriter("utf-8")(sys.stdout.buffer if hasattr(sys.stdout, "buffer") else sys.stdout)
+
+    if args.version:
+        console = Console()
+        console.print(f"[green]misspellings version[/green]: [bold green]{get_version()}\n")
+        return 0
 
     if args.misspelling_file:
         misspelling = MisspellingFactory.factory(
