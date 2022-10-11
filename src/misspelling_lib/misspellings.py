@@ -15,6 +15,7 @@ source code and identify misspelled words.
 """
 
 import codecs
+import signal
 import sys
 from pathlib import Path
 from typing import Optional
@@ -30,7 +31,7 @@ from misspelling_lib import MisspellingFactory
 from misspelling_lib.utils import MisspellingArgumentParser, expand_directories, get_version, parse_file_list
 
 
-def main() -> Optional[int]:
+def entrypoint() -> Optional[int]:
     """Internal main entry point."""
     parser = MisspellingArgumentParser()
     args = parser.parse_args()
@@ -82,9 +83,22 @@ def main() -> Optional[int]:
 
     if args.script_output:
         misspelling.output_sed_commands(parser, args, filenames=args.files)
-        return 0
+    else:
+        return 2 if misspelling.print_result(filenames=args.files, output=output) else 0
 
-    return 2 if misspelling.print_result(filenames=args.files, output=output) else 0
+
+def main():
+    """Main entry point"""
+    try:
+        # Exit on broken pipe.
+        signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+    except AttributeError:
+        pass
+
+    try:
+        return entrypoint()
+    except KeyboardInterrupt:
+        return 2
 
 
 if __name__ == "__main__":
