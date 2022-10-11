@@ -22,7 +22,7 @@ from typing import Optional
 from rich.console import Console
 
 file = Path(__file__).resolve()
-package_root_directory = file.parent
+package_root_directory = file.parent.parent
 sys.path.append(str(package_root_directory))
 
 

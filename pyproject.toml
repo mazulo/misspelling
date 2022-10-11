@@ -6,7 +6,8 @@ authors = ["Patrick Mazulo <pmazulo@gmail.com>"]
 license = "GNU GENERAL PUBLIC LICENSE"
 packages = [
     { include = "src" },
-    { include = "src/**/*.py" },
+    { include = "src/misspelling_lib/*.py" },
+    { include = "src/misspelling_lib/utils/*.py" },
 ]
 
 [tool.poetry.dependencies]
