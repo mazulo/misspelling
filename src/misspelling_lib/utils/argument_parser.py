@@ -26,7 +26,7 @@ class MisspellingArgumentParser(Tap):
     ] = None  # Create a shell script to interactively correct the files - script saved to the given file
     export_file: Optional[Path] = None  # Export the list of misspelled words into a file
     dump_misspelling: bool = False  # Dump the list of misspelled words
-    version: str = f"misspellings version: {get_version()}"
+    version: bool = False  # Version of the misspellings package
     files: Optional[Union[List[Path], List[str]]] = None  # Files to check
 
     def configure(self) -> None:
