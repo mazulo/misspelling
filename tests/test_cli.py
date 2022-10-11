@@ -3,7 +3,7 @@ import subprocess
 from pathlib import Path
 
 TEST_BASE_DIR = Path(__file__).parents[0]
-CLI = Path(__file__).parents[1] / "src" / "misspellings.py"
+CLI = Path(__file__).parents[1] / "src/misspelling_lib/misspellings.py"
 
 
 class TestCli:

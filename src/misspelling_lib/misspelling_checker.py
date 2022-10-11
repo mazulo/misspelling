@@ -6,9 +6,8 @@ from typing import List, TextIO, Tuple, Union
 
 from tap.tap import TapType
 
-from src.misspelling_lib.utils import esc_file, esc_sed, same_case, split_words
-
 from .misspelling_interface import IMisspellingChecker
+from .utils import esc_file, esc_sed, same_case, split_words
 
 
 class MisspellingChecker(IMisspellingChecker):

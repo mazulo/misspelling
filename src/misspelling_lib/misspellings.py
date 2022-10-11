@@ -20,8 +20,8 @@ from typing import Optional
 
 from rich.console import Console
 
-from src import MisspellingFactory
-from src.misspelling_lib.utils import MisspellingArgumentParser, expand_directories, get_version, parse_file_list
+from misspelling_lib import MisspellingFactory
+from misspelling_lib.utils import MisspellingArgumentParser, expand_directories, get_version, parse_file_list
 
 
 def main() -> Optional[int]:

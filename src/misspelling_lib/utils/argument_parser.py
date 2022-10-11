@@ -3,8 +3,6 @@ from typing import List, Optional, Union
 
 from tap import Tap
 
-from .version import get_version
-
 
 def to_path(files: Union[List[Path], List[str]]) -> List[str]:
     return files
