@@ -5,7 +5,7 @@ from typing import DefaultDict, Dict, List, TextIO, Tuple, Union
 
 from tap.tap import TapType
 
-from src.misspelling_lib.utils import SuggestionGenerator
+from .utils import SuggestionGenerator
 
 
 class IMisspellingChecker(metaclass=abc.ABCMeta):

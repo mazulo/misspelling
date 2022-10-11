@@ -16,12 +16,18 @@ source code and identify misspelled words.
 
 import codecs
 import sys
+from pathlib import Path
 from typing import Optional
 
 from rich.console import Console
 
-from src import MisspellingFactory
-from src.misspelling_lib.utils import MisspellingArgumentParser, expand_directories, get_version, parse_file_list
+file = Path(__file__).resolve()
+package_root_directory = file.parent.parent
+sys.path.append(str(package_root_directory))
+
+
+from misspelling_lib import MisspellingFactory
+from misspelling_lib.utils import MisspellingArgumentParser, expand_directories, get_version, parse_file_list
 
 
 def main() -> Optional[int]:
@@ -39,7 +45,7 @@ def main() -> Optional[int]:
 
     if args.version:
         console = Console()
-        console.print(f"[green]misspellings version[/green]: [bold green]{get_version()}\n")
+        console.print(f"[green]misspellings version[/green]: [bold green]{get_version()}")
         return 0
 
     if args.misspelling_file:
