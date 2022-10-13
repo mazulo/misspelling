@@ -47,7 +47,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     package_dir={"": "src"},
-    package_data={"misspelling_lib": ["assets/wikipedia.json"]},
+    package_data={"misspelling_lib": ["json_sources/wikipedia.json"]},
     entry_points={"console_scripts": ["misspellings = misspelling_lib.misspellings:main"]},
     install_requires=["typed-argument-parser==1.7.2", "rich==12.6.0"],
     keywords="check, code, spelling, spellcheck",
