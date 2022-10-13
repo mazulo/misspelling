@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 from tap import Tap
 
 
-def to_path(files: Union[List[Path], List[str]]) -> List[str]:
+def to_path(files: Union[List[Path], List[str]]) -> List[Path]:
     return files
 
 
@@ -25,12 +25,11 @@ class MisspellingArgumentParser(Tap):
     export_file: Optional[Path] = None  # Export the list of misspelled words into a file
     dump_misspelling: bool = False  # Dump the list of misspelled words
     version: bool = False  # Version of the misspellings package
-    files: Optional[Union[List[Path], List[str]]] = None  # Files to check
+    files: Optional[List[Path]] = None  # Files to check
 
     def configure(self) -> None:
         self.add_argument(
             "files",
             nargs="*",
             help="Files to check",
-            type=to_path,
         )

@@ -1,5 +1,6 @@
 import re
 import string
+from pathlib import Path
 from typing import List
 
 _NORM_REGEX = re.compile(r"(?<=[a-z])(?=[A-Z])")
@@ -38,6 +39,7 @@ def esc_sed(raw_text: str) -> str:
     return raw_text.replace('"', '\\"').replace("/", "\\/")
 
 
-def esc_file(raw_text: str) -> str:
+def esc_file(path_text: Path) -> str:
     """Escape chars for a file name on a shell command line."""
+    raw_text = path_text.as_posix()
     return raw_text.replace("'", "'\"'\"'")

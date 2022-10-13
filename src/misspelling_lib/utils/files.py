@@ -1,13 +1,13 @@
-import os
 import re
 import sys
+from glob import iglob
 from pathlib import Path
-from typing import List, NoReturn, Union
+from typing import Iterator, List, NoReturn, Union
 
-EXCLUDED_RE = re.compile(r"\.(py[co]|s?o|a|sh|txt|pylintrc|coverage|gitignore|python-version)|LICENSE$")
+EXCLUDED_FILES_RE = re.compile(r"\.(pyc|s?o|a|sh|txt|coverage|gitignore|python-version)|LICENSE$")
 EXCLUDED_DIRS_RE = re.compile(
-    r"^(.*\..*egg|.*\..*egg-info|\..git|\..github|\..*mypy_cache|CVS|"
-    r"\.pytest_cache|bin|\.idea|assets|tests/assets|)$"
+    r"\.(git|github|mypy_cache|pytest_cache|idea|vscode)|"
+    r"^(\*egg|\*egg-info|CVS|bin|node_modules|json_sources|tests/sources)$"
 )
 
 
@@ -22,19 +22,16 @@ def parse_file_list(filename: Path) -> Union[List[Path], NoReturn]:
             f.close()
         return file_list
     except IOError as err:
-        print(f"ERRO NO ARQUIVO: {err}")
         raise err
 
 
-def expand_directories(path_list: List[Path]) -> List[Path]:
+def expand_directories(path_list: List[Path]) -> Iterator[Path]:
     """Return list with directories replaced their contained files."""
     for path in path_list:
-        if os.path.isdir(path):
-            for root, dirnames, filenames in os.walk(path):
+        if path.is_dir() and not EXCLUDED_DIRS_RE.match(path.as_posix()):
+            for filenames in iglob(path.as_posix()):
                 for name in filenames:
-                    if not EXCLUDED_RE.search(name):
-                        yield os.path.join(root, name)
-
-                dirnames[:] = [d for d in dirnames if not EXCLUDED_DIRS_RE.match(d)]
+                    if not EXCLUDED_FILES_RE.search(name):
+                        yield Path(name)
         else:
             yield path
