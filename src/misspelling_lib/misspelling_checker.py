@@ -2,7 +2,7 @@ import os
 import pathlib
 import sys
 from codecs import StreamWriter
-from typing import List, TextIO, Tuple, Union
+from typing import Iterator, List, TextIO, Tuple, Union
 
 from tap.tap import TapType
 
@@ -11,7 +11,7 @@ from .utils import esc_file, esc_sed, same_case, split_words
 
 
 class MisspellingChecker(IMisspellingChecker):
-    def check(self, filename: pathlib.Path) -> Tuple[List[Exception], List[List[Union[str, int, str]]]]:
+    def check(self, filename: pathlib.Path) -> Tuple[List[Exception], List[List[Union[pathlib.Path, int, str]]]]:
         """
         Checks the files for misspellings.
         Returns:
@@ -47,9 +47,7 @@ class MisspellingChecker(IMisspellingChecker):
           List of zero or more suggested replacements for word.
 
         """
-        suggestions = set(self._misspelling_dict.get(word, [])).union(
-            set(self._misspelling_dict.get(word.lower(), []))
-        )
+        suggestions = set(self._misspelling_dict.get(word, [])).union(set(self._misspelling_dict.get(word.lower(), [])))
         return sorted(same_case(source=word, destination=w) for w in suggestions)
 
     def dump_corrections(self) -> List[List[str]]:
@@ -60,7 +58,7 @@ class MisspellingChecker(IMisspellingChecker):
                 results.append([bad_word, correction])
         return results
 
-    def print_result(self, filenames: List[pathlib.Path], output: StreamWriter) -> bool:
+    def print_result(self, filenames: Iterator[pathlib.Path], output: StreamWriter) -> bool:
         """
         Print a list of misspelled words and their corrections.
 
@@ -82,7 +80,7 @@ class MisspellingChecker(IMisspellingChecker):
 
         return found
 
-    def export_result_to_file(self, filenames: List[pathlib.Path], output: TextIO) -> None:
+    def export_result_to_file(self, filenames: Iterator[pathlib.Path], output: TextIO) -> None:
         """
         Save the list of misspelled words and their corrections into a file.
         """
@@ -99,7 +97,7 @@ class MisspellingChecker(IMisspellingChecker):
                     )
                 )
 
-    def output_sed_commands(self, parser: TapType, args: TapType, filenames: List[pathlib.Path]) -> None:
+    def output_sed_commands(self, parser: TapType, args: TapType, filenames: Iterator[pathlib.Path]) -> None:
         """
         Output a series of portable sed commands to change the file.
         """
