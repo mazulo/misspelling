@@ -1,11 +1,7 @@
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from tap import Tap
-
-
-def to_path(files: Union[List[Path], List[str]]) -> List[Path]:
-    return files
 
 
 class MisspellingArgumentParser(Tap):
