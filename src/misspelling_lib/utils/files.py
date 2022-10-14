@@ -1,13 +1,13 @@
+import os
 import re
 import sys
-from glob import iglob
 from pathlib import Path
-from typing import Iterator, List, NoReturn, Union
+from typing import Iterator, List, NoReturn, Optional, Union
 
 EXCLUDED_FILES_RE = re.compile(r"\.(pyc|s?o|a|sh|txt|coverage|gitignore|python-version)|LICENSE$")
+DOT_EXCLUDED_DIRS_RE = re.compile(r"\.(git|github|mypy_cache|pytest_cache|idea|vscode|.local)")
 EXCLUDED_DIRS_RE = re.compile(
-    r"\.(git|github|mypy_cache|pytest_cache|idea|vscode)|"
-    r"(\*egg|\*egg-info|CVS|bin|node_modules|__pycache__|json_sources|test_assets)"
+    r"(\*egg|\*egg-info|CVS|bin|node_modules|__pycache__|json_sources|test_assets|_local|build|dist)"
 )
 
 
@@ -25,12 +25,25 @@ def parse_file_list(filename: Path) -> Union[List[Path], NoReturn]:
         raise err
 
 
-def expand_directories(path_list: List[Path]) -> Iterator[Path]:
+def expand_directories(path_list: List[Path], result_files: Optional[List[Path]] = None) -> Iterator[Path]:
     """Return list with directories replaced their contained files."""
+
+    if result_files is None:
+        result_files = []
+
     for path in path_list:
-        if path.is_dir() and not EXCLUDED_DIRS_RE.search(path.as_posix()):
-            for filename in iglob(f"{path}/**/*.*", recursive=True):
-                if not EXCLUDED_DIRS_RE.search(filename) and not EXCLUDED_FILES_RE.search(filename):
-                    yield Path(filename)
+        if path.is_dir():
+            for entry in os.scandir(path):
+                if (
+                    not entry.path.find(".local") > -1
+                    and not entry.path.find("_local") > -1
+                    and not DOT_EXCLUDED_DIRS_RE.search(entry.path)
+                    and not EXCLUDED_DIRS_RE.search(entry.path)
+                    and entry.is_dir()
+                ):
+                    expand_directories(path_list=[Path(entry.path)], result_files=result_files)
+                if entry.is_file() and not EXCLUDED_FILES_RE.search(entry.name):
+                    result_files.append(Path(entry.path))
         else:
-            yield path
+            result_files.append(path)
+    return result_files
