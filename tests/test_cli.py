@@ -30,6 +30,18 @@ class TestCli:
         assert len(output.decode().split("\n")) == 10
         assert p.returncode == 2
 
+    def test_good_file_with_ignore_misspelling_comment(self):
+        p = subprocess.Popen(
+            [CLI, "test_assets/nine_misspellings_with_ignore.c"],
+            cwd=TEST_BASE_DIR,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
+        (output, error_output) = p.communicate()
+        assert error_output.decode() == ""
+        assert len(output.decode().split("\n")) == 9
+        assert p.returncode == 2
+
     def test_bad_file(self):
         p = subprocess.Popen(
             [CLI, "test_assets/missing.c"],

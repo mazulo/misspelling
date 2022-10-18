@@ -27,6 +27,8 @@ class MisspellingChecker(IMisspellingChecker):
                 with open(filename, "r", encoding="utf-8") as f:
                     line_ct = 1
                     for line in f:
+                        if "# ignore-misspelling" in line:
+                            continue
                         for word in split_words(line):
                             if word in self._misspelling_dict or word.lower() in self._misspelling_dict:
                                 results.append([filename, line_ct, word])
