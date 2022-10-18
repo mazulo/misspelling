@@ -160,7 +160,7 @@ class TestCli:
         )
         (output, error_output) = p.communicate(input="\n".encode("utf8"))
         assert error_output.decode() == ""
-        assert "withdrawl" in output.decode()
+        assert "withdrawl" in output.decode()  # ignore-misspelling
         assert p.returncode == 0
 
         with open(good_out, "r", encoding="utf-8") as good_file:
