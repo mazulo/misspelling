@@ -7,4 +7,3 @@
     ytou [you],
     yuo [you],
     zeebra [zebra],
-  }
