@@ -4,7 +4,7 @@ import pathlib
 import sys
 from codecs import StreamWriter
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
-from typing import Iterator, List, Optional, TextIO, Tuple, Union
+from typing import Iterator, List, TextIO, Tuple, Union
 
 from tap.tap import TapType
 
