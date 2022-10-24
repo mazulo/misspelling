@@ -1,6 +1,6 @@
 import collections
 import pathlib
-from typing import Union
+from typing import List, Union
 
 from .misspelling_checker import MisspellingChecker
 
@@ -12,6 +12,7 @@ class MisspellingFileDetector(MisspellingChecker):
 
     def __init__(
         self,
+        filenames: List[pathlib.Path],
         misspelling_file: Union[pathlib.Path, str],
     ) -> None:
         """
@@ -24,6 +25,7 @@ class MisspellingFileDetector(MisspellingChecker):
           IOError: Raised if misspelling_file can't be found.
           ValueError: Raised if misspelling_file isn't correctly formatted.
         """
+        super().__init__(filenames)
         self._misspelling_dict = collections.defaultdict(list)
         with open(misspelling_file, "r", encoding="utf-8") as f:
             for line in f:

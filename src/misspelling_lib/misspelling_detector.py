@@ -11,10 +11,11 @@ class MisspellingDetector(MisspellingChecker):
     Detects misspelled words in files.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, filenames: List[pathlib.Path]) -> None:
         """
         Initialises a MisspellingDetector instance using the default json files.
         """
+        super().__init__(filenames)
         self._misspelling_dict = {}
         file_paths = self._get_default_json_files()
         for dictionary in file_paths:

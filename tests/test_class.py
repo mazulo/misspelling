@@ -12,34 +12,49 @@ BASE_PATH = Path(__file__).parents[0]
 class TestMisspellingDetector:
     def test_missing_ms_list(self):
         with pytest.raises(IOError):
-            MisspellingFileDetector(os.path.join(BASE_PATH, "missing_msl.txt"))
+            MisspellingFileDetector(
+                filenames=[BASE_PATH / "missing_msl.txt"],
+                misspelling_file=BASE_PATH / "test_assets/nine_misspellings.cc",
+            )
 
     def test_broken_ms_list(self):
         with pytest.raises(ValueError):
-            MisspellingFileDetector(os.path.join(BASE_PATH, "test_assets/broken_msl.txt"))
+            MisspellingFileDetector(
+                filenames=[BASE_PATH / "broken_msl.txt"],
+                misspelling_file=BASE_PATH / "test_assets/broken_nine_misspellings.c",
+            )
 
     def test_missing_ms_list_for_json_detector(self):
         with pytest.raises(IOError):
-            MisspellingJSONDetector(os.path.join(BASE_PATH, "missing_msl.json"))
+            MisspellingJSONDetector(
+                filenames=[BASE_PATH / "missing_msl.json"],
+                misspelling_file=BASE_PATH / "test_assets/missing_nine_misspellings.json",
+            )
 
     def test_broken_ms_list_for_json_detector(self):
         with pytest.raises(ValueError):
-            MisspellingJSONDetector(os.path.join(BASE_PATH, "test_assets/broken_msl.json"))
+            MisspellingJSONDetector(
+                filenames=[BASE_PATH / "broken_msl.json"],
+                misspelling_file=BASE_PATH / "test_assets/broken_nine_misspellings.json",
+            )
 
     def test_missing_file(self):
-        ms = MisspellingDetector()
-        errors, _ = ms.check(BASE_PATH / "test_assets/missing_source.c")
+        ms = MisspellingDetector(filenames=[BASE_PATH / "test_assets/missing_source.c"])
+        file_dto = ms.files_dto[0]
+        errors, _ = ms.check(file_dto)
         assert errors
 
     def test_good_file(self):
-        ms = MisspellingDetector()
-        errors, results = ms.check(BASE_PATH / "test_assets/nine_misspellings.json")
+        ms = MisspellingDetector(filenames=[BASE_PATH / "test_assets/nine_misspellings.json"])
+        file_dto = ms.files_dto[0]
+        errors, results = ms.check(file_dto)
         assert len(errors) == 0
         assert len(results) == 9
 
     def test_more_complex_file(self):
-        ms = MisspellingDetector()
-        errors, results = ms.check(BASE_PATH / "test_assets/various_spellings.c")
+        ms = MisspellingDetector(filenames=[BASE_PATH / "test_assets/various_spellings.c"])
+        file_dto = ms.files_dto[0]
+        errors, results = ms.check(file_dto)
         assert len(errors) == 0
         assert len(results) == 7
 

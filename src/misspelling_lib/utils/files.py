@@ -2,7 +2,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Iterator, List, NoReturn, Optional, Union
+from typing import List, NoReturn, Optional, Union
 
 EXCLUDED_FILES_RE = re.compile(r"\.(pyc|s?o|a|sh|txt|coverage|gitignore|python-version)|LICENSE$")
 DOT_EXCLUDED_DIRS_RE = re.compile(r"\.(git|github|mypy_cache|pytest_cache|idea|vscode|.local)")
@@ -25,7 +25,7 @@ def parse_file_list(filename: Path) -> Union[List[Path], NoReturn]:
         raise err
 
 
-def expand_directories(path_list: List[Path], result_files: Optional[List[Path]] = None) -> Iterator[Path]:
+def expand_directories(path_list: List[Path], result_files: Optional[List[Path]] = None) -> List[Path]:
     """Return list with directories replaced their contained files."""
 
     if result_files is None:

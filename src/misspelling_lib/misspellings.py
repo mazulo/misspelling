@@ -50,28 +50,33 @@ def entrypoint() -> Optional[int]:
         return 0
 
     if args.misspelling_file:
+        args.files = expand_directories(args.files)
         misspelling = MisspellingFactory.factory(
             misspelling_detector_name="misspelling_file_detector",
+            filenames=args.files,
             misspelling_file=args.misspelling_file,
         )
-        args.files = expand_directories(args.files)
 
         if args.export_file:
             with open(args.export_file, "w", encoding="utf-8") as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     elif args.json_file:
+        args.files = expand_directories(args.files)
         misspelling = MisspellingFactory.factory(
             misspelling_detector_name="misspelling_json_detector",
+            filenames=args.files,
             misspelling_file=args.json_file,
         )
-        args.files = expand_directories(args.files)
 
         if args.export_file:
             with open(args.export_file, "w", encoding="utf-8") as correction_file:
                 misspelling.export_result_to_file(filenames=args.files, output=correction_file)
     else:
-        misspelling = MisspellingFactory.factory(misspelling_detector_name="misspelling_detector")
         args.files = expand_directories(args.files)
+        misspelling = MisspellingFactory.factory(
+            misspelling_detector_name="misspelling_detector",
+            filenames=args.files,
+        )
 
         if args.export_file:
             with open(args.export_file, "w", encoding="utf-8") as correction_file:
