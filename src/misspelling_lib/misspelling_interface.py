@@ -5,12 +5,22 @@ from typing import DefaultDict, Dict, List, TextIO, Tuple, Union
 
 from tap.tap import TapType
 
+from .dto import FileContentDTO
 from .utils import SuggestionGenerator
 
 
 class IMisspellingChecker(metaclass=abc.ABCMeta):
     _misspelling_dict: Union[DefaultDict, Dict]
     suggestion_generator = SuggestionGenerator()
+
+    def initialize_files_content(self, filenames: List[pathlib.Path]) -> List[FileContentDTO]:
+        raise NotImplementedError
+
+    def read_file(self, filename: pathlib.Path) -> FileContentDTO:
+        raise NotImplementedError
+
+    def load_files(self, filenames: List[pathlib.Path]) -> List[FileContentDTO]:
+        raise NotImplementedError
 
     @abc.abstractmethod
     def check(self, filename: str) -> Tuple[List[Exception], List[List[Union[str, int, str]]]]:

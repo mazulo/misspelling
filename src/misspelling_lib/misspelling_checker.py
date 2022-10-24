@@ -1,17 +1,67 @@
+import multiprocessing
 import os
 import pathlib
 import sys
 from codecs import StreamWriter
-from typing import Iterator, List, TextIO, Tuple, Union
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
+from typing import Iterator, List, Optional, TextIO, Tuple, Union
 
 from tap.tap import TapType
 
+from .dto import FileContentDTO
 from .misspelling_interface import IMisspellingChecker
 from .utils import esc_file, esc_sed, same_case, split_words
 
 
 class MisspellingChecker(IMisspellingChecker):
-    def check(self, filename: pathlib.Path) -> Tuple[List[Exception], List[List[Union[pathlib.Path, int, str]]]]:
+    def __init__(self, filenames: List[pathlib.Path]) -> None:
+        self.files_dto = self.initialize_files_content(filenames)
+
+    def initialize_files_content(self, filenames: List[pathlib.Path]) -> List[FileContentDTO]:
+        number_of_workers = int(multiprocessing.cpu_count() * 0.5)
+        chunk_size = round(len(filenames) / number_of_workers) or 1
+        list_file_content_dto = []
+
+        # Create the process pool
+        with ProcessPoolExecutor(number_of_workers) as executor:
+            futures = []
+            # Split the load operations into chunks
+            for i in range(0, len(filenames), chunk_size):
+                # select a chunk of filenames
+                filepaths = filenames[i : (i + chunk_size)]
+                # submit the task
+                future = executor.submit(self.load_files, filepaths)
+                futures.append(future)
+
+            # Process all results
+            for future in as_completed(futures):
+                # Retrieve the list of FileContentDTOs
+                list_file_content_dto.extend(future.result())
+
+        return list_file_content_dto
+
+    def read_file(self, filename: pathlib.Path) -> FileContentDTO:
+        try:
+            with open(filename, "r", encoding="utf-8") as file:
+                file_content_dto = FileContentDTO(
+                    filename=filename.name,
+                    filepath=filename,
+                    filecontent=file.readlines(),
+                )
+        except (IOError, UnicodeDecodeError) as exception:
+            return FileContentDTO(filename=filename.name, filepath=filename, has_error=True, error=str(exception))
+        else:
+            return file_content_dto
+
+    def load_files(self, filenames: List[pathlib.Path]) -> List[FileContentDTO]:
+        with ThreadPoolExecutor(int(multiprocessing.cpu_count() * 0.5)) as exe:
+            # Load files
+            futures = [exe.submit(self.read_file, filename) for filename in filenames]
+            # Collect data
+            list_file_content_dto = [future.result() for future in futures]
+            return list_file_content_dto
+
+    def check(self, file_dto: FileContentDTO) -> Tuple[List[FileContentDTO], List[List[Union[pathlib.Path, int, str]]]]:
         """
         Checks the files for misspellings.
         Returns:
@@ -22,21 +72,18 @@ class MisspellingChecker(IMisspellingChecker):
         """
         errors = []
         results = []
-        if not os.path.isdir(filename):
-            try:
-                with open(filename, "r", encoding="utf-8") as f:
-                    line_ct = 1
-                    for line in f:
-                        if "# ignore-misspelling" in line:
-                            continue
-                        for word in split_words(line):
-                            if word in self._misspelling_dict or word.lower() in self._misspelling_dict:
-                                results.append([filename, line_ct, word])
-                        line_ct += 1
-            except UnicodeDecodeError:
-                pass
-            except IOError as exception:
-                errors.append(exception)
+        if file_dto.has_error:
+            errors.append(file_dto)
+        else:
+            line_number = 1
+            for line in file_dto.filecontent:
+                if "# ignore-misspelling" in line:
+                    continue
+                for word in split_words(line):
+                    if word in self._misspelling_dict or word.lower() in self._misspelling_dict:
+                        results.append([file_dto.filepath, line_number, word])
+                line_number += 1
+
         return errors, results
 
     def get_suggestions(self, word: str) -> List[str]:
@@ -63,21 +110,18 @@ class MisspellingChecker(IMisspellingChecker):
     def print_result(self, filenames: Iterator[pathlib.Path], output: StreamWriter) -> bool:
         """
         Print a list of misspelled words and their corrections.
-
         Return True if misspellings are found.
-
         """
         found = False
-
-        for filename in filenames:
-            errors, results = self.check(filename)
-            for res in results:
-                suggestions = ",".join(['"%s"' % w for w in self.get_suggestions(res[2])])
-                output.write(f"{res[0]}:{res[1]}: {res[2]} -> {suggestions}\n")
+        for file_dto in self.files_dto:
+            errors, results = self.check(file_dto)
+            for result in results:
+                suggestions = ",".join([f'"{w}"' for w in self.get_suggestions(result[2])])
+                output.write(f"{result[0]}:{result[1]}: {result[2]} -> {suggestions}\n")
                 found = True
 
-            for err in errors:
-                sys.stderr.write("ERROR: %s\n" % err)
+            for error in errors:
+                sys.stderr.write(f"ERROR: {error.error}\n")
             output.flush()
 
         return found
@@ -87,42 +131,38 @@ class MisspellingChecker(IMisspellingChecker):
         Save the list of misspelled words and their corrections into a file.
         """
 
-        for filename in filenames:
-            _, results = self.check(filename)
-            for res in results:
-                output.write(
-                    "{}:{}: {} -> {}\n".format(
-                        res[0],
-                        res[1],
-                        res[2],
-                        ",".join(['"%s"' % w for w in self.get_suggestions(res[2])]),
-                    )
-                )
+        for file_dto in self.files_dto:
+            _, results = self.check(file_dto)
+            for result in results:
+                suggestions = ",".join([f'"{w}"' for w in self.get_suggestions(result[2])])
+                output.write(f"{result[0]}:{result[1]}: {result[2]} -> {suggestions}\n")
 
     def output_sed_commands(self, parser: TapType, args: TapType, filenames: Iterator[pathlib.Path]) -> None:
         """
         Output a series of portable sed commands to change the file.
         """
         if os.path.exists(args.script_output):
-            # Emit an error is the file already exists in case the user
+            # Emit an error if the file already exists in case the user
             # forgets to give the file - but does give source files.
-            parser.error('The sed script file "%s" must not exist.' % args.script_output)
+            parser.error(f'The sed script file "{args.script_output}" must not exist.')
 
         with open(args.script_output, "w", encoding="utf-8") as sed_script:
-            for filename in filenames:
-                errors, results = self.check(filename)
-                for res in results:
-                    suggestions = self.get_suggestions(res[2])
+            for file_dto in self.files_dto:
+                errors, results = self.check(file_dto)
+                for result in results:
+                    suggestions = self.get_suggestions(result[2])
                     if len(suggestions) == 1:
                         suggestion = suggestions[0]
                     else:
-                        suggestion = self.suggestion_generator.get_suggestion(res[0], res[1], res[2], suggestions)
-                    if suggestion != res[2]:
-                        sed_script.write(
-                            f'cp "{esc_file(res[0])}" "{esc_file(res[0])},"\n'
-                            f'sed "{res[1]}s/{esc_sed(res[2])}/{esc_sed(suggestion)}/"'
-                            f' "{esc_file(res[0])}" > "{esc_file(res[0])},"\n'
-                            f'mv "{esc_file(res[0])}," "{esc_file(res[0])}"\n'
+                        suggestion = self.suggestion_generator.get_suggestion(
+                            result[0], result[1], result[2], suggestions
                         )
-                for err in errors:
-                    sys.stderr.write(f"ERROR: {err}\n" % err)
+                    if suggestion != result[2]:
+                        sed_script.write(
+                            f'cp "{esc_file(result[0])}" "{esc_file(result[0])},"\n'
+                            f'sed "{result[1]}s/{esc_sed(result[2])}/{esc_sed(suggestion)}/"'
+                            f' "{esc_file(result[0])}" > "{esc_file(result[0])},"\n'
+                            f'mv "{esc_file(result[0])}," "{esc_file(result[0])}"\n'
+                        )
+                for error in errors:
+                    sys.stderr.write(f"ERROR: {error.error}\n")
