@@ -84,5 +84,8 @@ class TestUtilityFunction:
     def test_split_words_with_other_characters(self):
         assert split_words("the%big$cat") == ["the", "big", "cat"]
 
+    def test_split_words_with_camel_case_single_letter(self):
+        assert ["A", "Fair", "Market"] == split_words("AFairMarket")
+
     def test_normalize(self):
         assert normalize('"alpha".') == "alpha"
