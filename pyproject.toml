@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "misspelling"
-version = "2.0.7"
+version = "2.0.8"
 description = "This is a Python library and tool to check for misspelled words in source code."
 authors = ["Patrick Mazulo <pmazulo@gmail.com>"]
 license = "GNU GENERAL PUBLIC LICENSE"
@@ -46,3 +46,16 @@ force_grid_wrap=0
 use_parentheses=true
 ensure_newline_before_comments=true
 line_length=120
+
+[tool.semantic_release]
+version_variable = [
+    "src/misspelling_lib/utils/version.py:__version__",
+    "pyproject.toml:version",
+]
+branch = "main"
+changelog_file = "CHANGELOG.md"
+dist_path = "dist/"
+upload_to_release = true
+upload_to_pypi = false
+remove_dist = false
+patch_without_tag = true
