@@ -9,9 +9,9 @@ import sys
 import unittest
 from pathlib import Path
 
-from setuptools import Command, find_packages, setup
+from setuptools import Command, setup
 
-from src.misspelling_lib.utils import get_version
+from src.misspelling_lib.utils.version import __version__
 
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
@@ -38,9 +38,9 @@ class TestCommand(Command):
 setup(
     cmdclass={"test": TestCommand},
     name="misspellings_lib",
-    version=get_version(),
-    url="https://github.com/mazulo/misspellings",
-    download_url=f"https://github.com/mazulo/misspellings/tarball/{get_version()}",
+    version=__version__,
+    url="https://github.com/mazulo/misspelling",
+    download_url=f"https://github.com/mazulo/misspelling/tarball/{__version__}",
     author="Patrick Mazulo",
     author_email="pmazulo@gmail.com",
     description="A tool to detect misspellings with opinionated additions",

@@ -49,7 +49,7 @@ line_length=120
 
 [tool.semantic_release]
 version_variable = [
-    "src/mispelling_lib/utils/version:get_version",
+    "src/misspelling_lib/utils/version.py:__version__",
     "pyproject.toml:version",
 ]
 branch = "main"

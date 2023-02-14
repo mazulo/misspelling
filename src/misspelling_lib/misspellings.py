@@ -28,7 +28,8 @@ sys.path.append(str(package_root_directory))
 
 
 from misspelling_lib import MisspellingFactory
-from misspelling_lib.utils import MisspellingArgumentParser, expand_directories, get_version, parse_file_list
+from misspelling_lib.utils import MisspellingArgumentParser, expand_directories, parse_file_list
+from misspelling_lib.utils.version import __version__
 
 
 def entrypoint() -> Optional[int]:
@@ -46,7 +47,7 @@ def entrypoint() -> Optional[int]:
 
     if args.version:
         console = Console()
-        console.print(f"[green]misspellings version[/green]: [bold green]{get_version()}")
+        console.print(f"[green]misspellings version[/green]: [bold green]{__version__}")
         return 0
 
     if args.misspelling_file:
