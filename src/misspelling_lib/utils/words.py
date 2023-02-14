@@ -3,7 +3,7 @@ import string
 from pathlib import Path
 from typing import List
 
-_NORM_REGEX = re.compile(r"(?<=[a-z])(?=[A-Z])")
+_NORM_REGEX = re.compile(r"(?<=[a-z])?(?=[A-Z])")
 _WORD_REGEX = re.compile(r"[\s_0-9\W]+", flags=re.UNICODE)
 
 
