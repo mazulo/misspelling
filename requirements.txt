@@ -15,4 +15,4 @@ pre-commit==2.20.0
 setuptools==65.4.1
 wheel==0.37.1
 rich==12.6.0
-python-semantic-release==7.33.1
+python-semantic-release==7.28.0
